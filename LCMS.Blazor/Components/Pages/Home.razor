@@ -1,0 +1,27 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@attribute [Authorize]
+@inherits AuthenticatedPageBase
+
+<PageTitle>Home</PageTitle>
+
+<div class="row">
+    <div class="col-12">
+        <h1 class="fw-bolder">Welcome to LCMS.Blazor!</h1>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <AuthorizeView>
+                    <NotAuthorized>
+                        <span>You are not logged in. Please <a class="fw-bolder" href="/login">click here</a> to login.</span>
+                    </NotAuthorized>
+                    <Authorized>
+                        <span>Logged in as <b>@_currentUserFullName</b>. <a class="fw-bolder" href="/logout">Click here</a> to logout.</span>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+        </div>
+    </div>
+</div>

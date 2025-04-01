@@ -1,0 +1,59 @@
+﻿@page "/clients/details"
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Client</h2>
+    <hr />
+    @if (model is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Type</dt>
+            <dd class="col-sm-10">@model.Type</dd>
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@model.Name</dd>
+            <dt class="col-sm-2">Address</dt>
+            <dd class="col-sm-10">@model.FullAddress</dd>
+            <dt class="col-sm-2">Phone Number</dt>
+            <dd class="col-sm-10">@model.PhoneNumber</dd>
+            <dt class="col-sm-2">URL</dt>
+            <dd class="col-sm-10">@model.Url</dd>
+            <dt class="col-sm-2">IsActive</dt>
+            <dd class="col-sm-10">@model.IsActive</dd>
+        </dl>
+        <div>
+            <a href="@($"/clients/edit?id={model.Id}")">Edit</a> |
+            <a href="@($"/clients")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private ClientModel? model;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<IClientService>();
+        model = service.GetClient(Id);
+        if (model is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+        await base.OnInitializedAsync();
+    }
+}

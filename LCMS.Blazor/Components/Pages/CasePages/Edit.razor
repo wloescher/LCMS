@@ -1,0 +1,123 @@
+﻿@page "/cases/edit"
+@using Microsoft.EntityFrameworkCore
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit Case</h1>
+<hr />
+@if (Model is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Model" OnValidSubmit="UpdateCase" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Model.Id" value="@Model.Id" />
+                <input type="hidden" name="Model.Guid" value="@Model.Guid" />
+                <div class="mb-3">
+                    <label for="clientId" class="form-label">Client</label>
+                    <InputNumber id="clientId" @bind-Value="Model.ClientId" class="form-control" />
+                    <ValidationMessage For="() => Model.ClientId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="typeId" class="form-label">Type</label>
+                    <InputNumber id="typeId" @bind-Value="Model.TypeId" class="form-control" />
+                    <ValidationMessage For="() => Model.TypeId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="statusId" class="form-label">Status</label>
+                    <InputNumber id="statusId" @bind-Value="Model.StatusId" class="form-control" />
+                    <ValidationMessage For="() => Model.StatusId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <InputText id="title" @bind-Value="Model.Title" class="form-control" />
+                    <ValidationMessage For="() => Model.Title" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="summary" class="form-label">Summary</label>
+                    <InputText id="summary" @bind-Value="Model.Summary" class="form-control" />
+                    <ValidationMessage For="() => Model.Summary" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="isActive" class="form-label">IsActive</label>
+                    <InputCheckbox id="isActive" @bind-Value="Model.IsActive" class="form-check-input" />
+                    <ValidationMessage For="() => Model.IsActive" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="isDeleted" class="form-label">IsDeleted</label>
+                    <InputCheckbox id="isDeleted" @bind-Value="Model.IsDeleted" class="form-check-input" />
+                    <ValidationMessage For="() => Model.IsDeleted" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/cases">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private CaseModel? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<ICaseService>();
+        Model = service.GetCase(Id);
+        if (Model is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private void UpdateCase()
+    {
+        if (Model == null) return;
+
+        try
+        {
+            var service = ServiceProvider.GetRequiredService<ICaseService>();
+            service.UpdateCase(Model, _currentUserId);
+            NavigationManager.NavigateTo("/cases");
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!TitleIsUnique(Model.Title))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/users");
+    }
+
+    private bool TitleIsUnique(string title)
+    {
+        var service = ServiceProvider.GetRequiredService<ICaseService>();
+        return service.CheckForUniqueTitle(Id, title);
+    }
+}

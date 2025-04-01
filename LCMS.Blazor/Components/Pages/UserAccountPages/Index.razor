@@ -1,0 +1,52 @@
+﻿@page "/useraccounts"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@attribute [Authorize(Roles = "Admin")]
+@inherits AuthenticatedPageBase
+
+<PageTitle>Index</PageTitle>
+
+<h1>User Accounts</h1>
+
+<div>
+    <input type="search" @bind="userNameFilter" @bind:event="oninput" />
+</div>
+
+<p>
+    <a href="useraccounts/create">Create New</a>
+</p>
+
+<div>
+    <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
+        <PropertyColumn Property="model => model.UserName" Sortable="true" />
+        <PropertyColumn Property="model => model.IsActive" Sortable="true" />
+        <PropertyColumn Property="model => model.IsDeleted" Sortable="true" />
+        <TemplateColumn Context="model">
+            <a href="@($"useraccounts/details?id={model.Id}")">Details</a> |
+            <a href="@($"useraccounts/edit?id={model.Id}")">Edit</a> |
+            <a href="@($"useraccounts/delete?id={model.Id}")">Delete</a>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+<Paginator State="pagination" />
+
+@code {
+    private List<UserAccountModel> models = new();
+    private string userNameFilter = string.Empty;
+    private IQueryable<UserAccountModel> FilteredModels => models.Where(x => x.UserName.Contains(userNameFilter)).AsQueryable();
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<IUserAccountService>();
+        models = service.GetUserAccounts();
+
+        await base.OnInitializedAsync();
+    }
+}

@@ -1,0 +1,57 @@
+﻿@page "/clients"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Index</PageTitle>
+
+<h1>Clients</h1>
+
+<p>
+    <a href="clients/create">Create New</a>
+</p>
+
+<div>
+    <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
+        <PropertyColumn Property="model => model.Name" />
+        <PropertyColumn Property="model => model.Type" />
+        <PropertyColumn Property="model => model.City" />
+        <PropertyColumn Property="model => model.Region" />
+        <PropertyColumn Property="model => model.PostalCode" />
+        <PropertyColumn Property="model => model.Country" />
+        <PropertyColumn Property="model => model.PhoneNumber" />
+        <PropertyColumn Property="model => model.Url" />
+        <PropertyColumn Property="model => model.IsActive" />
+
+        <TemplateColumn Context="model">
+            <a href="@($"clients/details?id={model.Id}")">Details</a>
+            | <a href="@($"clients/edit?id={model.Id}")">Edit</a>
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    | <a href="@($"clients/delete?id={model.Id}")">Delete</a>
+                </Authorized>
+            </AuthorizeView>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+<Paginator State="pagination" />
+
+@code {
+    private List<ClientModel> models = new();
+    private string nameFilter = string.Empty;
+    private IQueryable<ClientModel> FilteredModels => models.Where(x => x.Name.ToLower().Contains(nameFilter)).AsQueryable();
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<IClientService>();
+        models = service.GetClients();
+
+        await base.OnInitializedAsync();
+    }
+}

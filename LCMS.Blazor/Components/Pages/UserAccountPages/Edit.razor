@@ -1,0 +1,105 @@
+﻿@page "/useraccounts/edit"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@attribute [Authorize(Roles = "Admin")]
+@inherits AuthenticatedPageBase
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit User Account</h1>
+<hr />
+@if (Model is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Model" OnValidSubmit="UpdateUserAccount" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="UserAccount.Id" value="@Model.Id" />
+                <input type="hidden" name="UserAccount.Guid" value="@Model.Guid" />
+                <div class="mb-3">
+                    <label for="userName" class="form-label">UserName</label>
+                    <InputText id="userName" @bind-Value="Model.UserName" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => Model.UserName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="isActive" class="form-label">IsActive</label>
+                    <InputCheckbox id="isActive" @bind-Value="Model.IsActive" class="form-check-input" />
+                    <ValidationMessage For="() => Model.IsActive" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="isDeleted" class="form-label">IsDeleted</label>
+                    <InputCheckbox id="isDeleted" @bind-Value="Model.IsDeleted" class="form-check-input" />
+                    <ValidationMessage For="() => Model.IsDeleted" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/useraccounts">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private UserAccountModel? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<IUserAccountService>();
+        Model = service.GetUserAccount(Id);
+        if (Model is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private void UpdateUserAccount()
+    {
+        if (Model == null) return;
+
+        try
+        {
+            var service = ServiceProvider.GetRequiredService<IUserAccountService>();
+            service.UpdateUserAccount(Model, _currentUserId);
+            NavigationManager.NavigateTo("/useraccounts");
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!UserNameIsUnique(Model.UserName))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/useraccounts");
+    }
+
+    private bool UserNameIsUnique(string userName)
+    {
+        var service = ServiceProvider.GetRequiredService<IUserAccountService>();
+        return service.CheckForUniqueUserName(Id, userName);
+    }
+}

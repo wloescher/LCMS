@@ -1,0 +1,78 @@
+﻿@page "/cases/delete"
+@using Microsoft.AspNetCore.Authorization
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@attribute [Authorize(Roles = "Admin")]
+@inherits AuthenticatedPageBase
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete Case</h1>
+<div>
+    <p>Are you sure you want to delete this?</p>
+    @if (model is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Client</dt>
+            <dd class="col-sm-10">@model.ClientId</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Type</dt>
+            <dd class="col-sm-10">@model.Type</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@model.Status</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Title</dt>
+            <dd class="col-sm-10">@model.Title</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Summary</dt>
+            <dd class="col-sm-10">@model.Summary</dd>
+        </dl>
+            <dl class="row">
+            <dt class="col-sm-2">IsActive</dt>
+            <dd class="col-sm-10">@model.IsActive</dd>
+            </dl>
+
+        <EditForm method="post" Model="model" OnValidSubmit="DeleteCase" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(model is null)">Delete</button> |
+            <a href="/cases">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private CaseModel? model;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<ICaseService>();
+        model = service.GetCase(Id);
+        if (model is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private void DeleteCase()
+    {
+        var service = ServiceProvider.GetRequiredService<ICaseService>();
+        service.DeleteCase(Id, _currentUserId);
+        NavigationManager.NavigateTo("/cases");
+    }
+
+}

@@ -1,0 +1,59 @@
+﻿@page "/users"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Index</PageTitle>
+
+<h1>Users</h1>
+
+<div>
+    <input type="search" @bind="nameFilter" @bind:event="oninput" />
+</div>
+
+<p>
+    <a href="users/create">Create New</a>
+</p>
+
+<div>
+    <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
+        <PropertyColumn Property="user => user.FullName" Sortable="true" />
+        <PropertyColumn Property="user => user.Type" Sortable="true" />
+        <PropertyColumn Property="user => user.EmailAddress" Sortable="true" />
+        <PropertyColumn Property="user => user.City" Sortable="true" />
+        <PropertyColumn Property="user => user.Region" Sortable="true" />
+        <PropertyColumn Property="user => user.Country" Sortable="true" />
+        <PropertyColumn Property="user => user.PhoneNumber" Sortable="true" />
+        <PropertyColumn Property="user => user.IsActive" Sortable="true" />
+        <TemplateColumn Context="model">
+            <a href="@($"users/details?id={model.Id}")">Details</a>
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    | <a href="@($"users/edit?id={model.Id}")">Edit</a>
+                    | <a href="@($"users/delete?id={model.Id}")">Delete</a>
+                </Authorized>
+            </AuthorizeView>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+<Paginator State="pagination" />
+
+@code {
+    private List<UserModel> models = new();
+    private string nameFilter = string.Empty;
+    private IQueryable<UserModel> FilteredModels => models.Where(x => x.FullName.ToLower().Contains(nameFilter)).AsQueryable();
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<IUserService>();
+        models = service.GetUsers();
+
+        await base.OnInitializedAsync();
+    }
+}

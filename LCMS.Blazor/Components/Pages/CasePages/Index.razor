@@ -1,0 +1,53 @@
+﻿@page "/cases"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Index</PageTitle>
+
+<h1>Cases</h1>
+
+<div>
+    <input type="search" @bind="titleFilter" @bind:event="oninput" />
+</div>
+
+<p>
+    <a href="cases/create">Create New</a>
+</p>
+
+<div>
+    <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
+        <PropertyColumn Property="model => model.ClientName" Sortable="true" />
+        <PropertyColumn Property="model => model.Type" Sortable="true" />
+        <PropertyColumn Property="model => model.Status" Sortable="true" />
+        <PropertyColumn Property="model => model.Title" Sortable="true" />
+        <PropertyColumn Property="model => model.Summary" Sortable="true" />
+        <PropertyColumn Property="model => model.IsActive" Sortable="true" />
+        <TemplateColumn Context="model">
+            <a href="@($"cases/details?id={model.Id}")">Details</a>
+            | <a href="@($"cases/edit?id={model.Id}")">Edit</a>
+            | <a href="@($"cases/delete?id={model.Id}")">Delete</a>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+<Paginator State="pagination" />
+
+@code {
+    private List<CaseModel> models = new();
+    private string titleFilter = string.Empty;
+    private IQueryable<CaseModel> FilteredModels => models.Where(x => x.Title.Contains(titleFilter)).AsQueryable();
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<ICaseService>();
+        models = service.GetCases();
+
+        await base.OnInitializedAsync();
+    }
+}

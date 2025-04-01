@@ -1,0 +1,58 @@
+﻿@page "/cases/details"
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Details</PageTitle>
+
+<h1>Case Details</h1>
+<hr />
+<div>
+    @if (model is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <dl class="row">
+            <dt class="col-sm-2">Client</dt>
+            <dd class="col-sm-10">@model.ClientName</dd>
+            <dt class="col-sm-2">Type</dt>
+            <dd class="col-sm-10">@model.Type</dd>
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@model.Status</dd>
+            <dt class="col-sm-2">Title</dt>
+            <dd class="col-sm-10">@model.Title</dd>
+            <dt class="col-sm-2">Summary</dt>
+            <dd class="col-sm-10">@model.Summary</dd>
+            <dt class="col-sm-2">IsActive</dt>
+            <dd class="col-sm-10">@model.IsActive</dd>
+        </dl>
+        <div>
+            <a href="@($"/cases/edit?id={model.Id}")">Edit</a> |
+            <a href="@($"/cases")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    private CaseModel? model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<ICaseService>();
+        model = service.GetCase(Id);
+        if (model is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+        await base.OnInitializedAsync();
+    }
+}

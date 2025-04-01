@@ -1,0 +1,64 @@
+﻿@page "/cases/create"
+@using Microsoft.AspNetCore.Authorization
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create Case</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Model" OnValidSubmit="CreateCase" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="clientId" class="form-label">Client</label>
+                <InputNumber id="clientId" @bind-Value="Model.ClientId" class="form-control" /> 
+                <ValidationMessage For="() => Model.ClientId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="typeId" class="form-label">Type</label> 
+                <InputNumber id="typeId" @bind-Value="Model.TypeId" class="form-control" /> 
+                <ValidationMessage For="() => Model.TypeId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="statusId" class="form-label">Status</label> 
+                <InputNumber id="statusId" @bind-Value="Model.StatusId" class="form-control" /> 
+                <ValidationMessage For="() => Model.StatusId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label> 
+                <InputText id="title" @bind-Value="Model.Title" class="form-control" /> 
+                <ValidationMessage For="() => Model.Title" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="summary" class="form-label">Summary</label> 
+                <InputText id="summary" @bind-Value="Model.Summary" class="form-control" /> 
+                <ValidationMessage For="() => Model.Summary" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/cases">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private CaseModel Model { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private void CreateCase()
+    {
+        var service = ServiceProvider.GetRequiredService<ICaseService>();
+        service.CreateCase(Model, _currentUserId);
+        NavigationManager.NavigateTo("/cases");
+    }
+}

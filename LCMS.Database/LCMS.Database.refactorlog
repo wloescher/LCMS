@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="2ce11a52-2be3-4083-aa47-1862be103407" ChangeDateTime="04/01/2025 10:33:45">
+    <Property Name="ElementName" Value="[dbo].[UserAccountAudit].[UserAccountAuditUserId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UserAccountAudit]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserAccountAuditUserAccountId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1769f78f-ecad-4588-bd3c-38a41dd56944" ChangeDateTime="04/01/2025 10:33:50">
+    <Property Name="ElementName" Value="[dbo].[UserAccountAudit].[UserAccountAuditUserId_Source]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UserAccountAudit]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserAccountAuditUserId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="0c3bb41d-f68b-4f4e-9aa1-e6acf4d6d63f" ChangeDateTime="04/01/2025 15:11:20">
+    <Property Name="ElementName" Value="[dbo].[UserAccount].[UserPasswordHash]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UserAccount]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserAccountPasswordHash" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="73e88d1d-0b30-4bc3-87cf-f2aa4aca9b5c" ChangeDateTime="04/01/2025 15:12:00">
+    <Property Name="ElementName" Value="[dbo].[UserAccount].[UserPasswordAttemptCount]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UserAccount]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserAccountPasswordAttemptCount" />
+  </Operation>
+</Operations>

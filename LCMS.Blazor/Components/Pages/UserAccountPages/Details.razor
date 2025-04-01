@@ -1,0 +1,53 @@
+﻿@page "/useraccounts/details"
+@using Microsoft.AspNetCore.Authorization
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@attribute [Authorize(Roles = "Admin")]
+@inherits AuthenticatedPageBase
+
+<PageTitle>Details</PageTitle>
+
+<h1>User Account Details</h1>
+<hr />
+<div>
+    @if (model is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">UserName</dt>
+            <dd class="col-sm-10">@model.UserName</dd>
+            <dt class="col-sm-2">IsActive</dt>
+            <dd class="col-sm-10">@model.IsActive</dd>
+            <dt class="col-sm-2">IsDeleted</dt>
+            <dd class="col-sm-10">@model.IsDeleted</dd>
+        </dl>
+        <div>
+            <a href="@($"/useraccounts/edit?id={model.Id}")">Edit</a> |
+            <a href="@($"/useraccounts")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    private UserAccountModel? model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<IUserAccountService>();
+        model = service.GetUserAccount(Id);
+        if (model is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+        await base.OnInitializedAsync();
+    }
+}

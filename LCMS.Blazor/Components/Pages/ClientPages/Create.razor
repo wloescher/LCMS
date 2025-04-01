@@ -1,0 +1,88 @@
+﻿@page "/clients/create"
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create Client</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Model" OnValidSubmit="CreateClient" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>      
+            <div class="mb-3">
+                <label for="typeId" class="form-label">Type</label> 
+                <InputNumber id="typeId" @bind-Value="Model.TypeId" class="form-control" />
+                <ValidationMessage For="() => Model.TypeId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label> 
+                <InputText id="name" @bind-Value="Model.Name" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Model.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="addressLine1" class="form-label">Address Line1</label>
+                <InputText id="addressLine1" @bind-Value="Model.AddressLine1" class="form-control" />
+                <ValidationMessage For="() => Model.AddressLine1" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="addressLine2" class="form-label">Address Line2</label>
+                <InputText id="addressLine2" @bind-Value="Model.AddressLine2" class="form-control" />
+                <ValidationMessage For="() => Model.AddressLine2" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <InputText id="city" @bind-Value="Model.City" class="form-control" />
+                <ValidationMessage For="() => Model.City" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="region" class="form-label">Region</label>
+                <InputText id="region" @bind-Value="Model.Region" class="form-control" />
+                <ValidationMessage For="() => Model.Region" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="postalCode" class="form-label">Postal Code</label>
+                <InputText id="postalCode" @bind-Value="Model.PostalCode" class="form-control" />
+                <ValidationMessage For="() => Model.PostalCode" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <InputText id="country" @bind-Value="Model.Country" class="form-control" />
+                <ValidationMessage For="() => Model.Country" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="phoneNumber" class="form-label">Phone Number</label> 
+                <InputText id="phoneNumber" @bind-Value="Model.PhoneNumber" class="form-control" />
+                <ValidationMessage For="() => Model.PhoneNumber" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="url" class="form-label">URL</label> 
+                <InputText id="url" @bind-Value="Model.Url" class="form-control" />
+                <ValidationMessage For="() => Model.Url" class="text-danger" /> 
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/clients">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private ClientModel Model { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private void CreateClient()
+    {
+        var service = ServiceProvider.GetRequiredService<IClientService>();
+        service.CreateClient(Model, _currentUserId);
+        NavigationManager.NavigateTo("/clients");
+    }
+}
