@@ -6,6 +6,7 @@ Web application that enables attorneys to manage legal cases, associate clients 
 - [x] EF Core Power Tools
 - [x] Entity Framework
 - [x] SQL Express
+- [x] Responsive Design (Bootstrap)
 
 ---
 
