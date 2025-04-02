@@ -87,8 +87,8 @@ namespace LCMS.Services
                 using (var dbContext = _dbContextFactory.CreateDbContext())
                 {
                     entities = activeOnly
-                        ? dbContext.Clients.Where(x => x.ClientIsActive).ToList()
-                        : dbContext.Clients.ToList();
+                        ? dbContext.Clients.Where(x => !x.ClientIsDeleted && x.ClientIsActive).ToList()
+                        : dbContext.Clients.Where(x => !x.ClientIsDeleted).ToList();
                 }
 
                 // Check for internal

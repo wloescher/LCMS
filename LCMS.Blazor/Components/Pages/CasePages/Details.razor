@@ -8,7 +8,20 @@
 
 <PageTitle>Details</PageTitle>
 
-<h1>Case Details</h1>
+<div class="row">
+    <div class="col-sm-6">
+        <h1>Case Details</h1>
+    </div>
+    <div class="col-sm-6 text-end">
+        <a class="btn btn-outline-secondary" href="/cases">Cancel</a>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <a href="@($"/cases/delete?id={model.Id}")" class="btn btn-danger">Delete</a>
+            </Authorized>
+        </AuthorizeView>
+        <a href="@($"/cases/edit?id={model.Id}")" class="btn btn-primary">Edit</a>
+    </div>
+</div>
 <hr />
 <div>
     @if (model is null)
@@ -18,23 +31,97 @@
     else
     {
         <dl class="row">
-            <dt class="col-sm-2">Client</dt>
-            <dd class="col-sm-10">@model.ClientName</dd>
-            <dt class="col-sm-2">Type</dt>
-            <dd class="col-sm-10">@model.Type</dd>
-            <dt class="col-sm-2">Status</dt>
-            <dd class="col-sm-10">@model.Status</dd>
-            <dt class="col-sm-2">Title</dt>
-            <dd class="col-sm-10">@model.Title</dd>
-            <dt class="col-sm-2">Summary</dt>
-            <dd class="col-sm-10">@model.Summary</dd>
-            <dt class="col-sm-2">IsActive</dt>
-            <dd class="col-sm-10">@model.IsActive</dd>
+            <div class="col-sm-4">
+                <dt class="col-sm-2">Client</dt>
+                <dd class="col-sm-10">@model.ClientName</dd>
+                <dt class="col-sm-2">Type</dt>
+                <dd class="col-sm-10">@model.Type</dd>
+                <dt class="col-sm-2">Status</dt>
+                <dd class="col-sm-10">@model.Status</dd>
+                <dt class="col-sm-2">Title</dt>
+                <dd class="col-sm-10">@model.Title</dd>
+                <dt class="col-sm-2">Summary</dt>
+                <dd class="col-sm-10">@model.Summary</dd>
+                <dt class="col-sm-2">Active</dt>
+                <dd class="col-sm-10">@model.IsActive</dd>
+            </div>
+            <div class="col-sm-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Documents <span class="badge rounded-pill bg-secondary">@documents.Count</span>
+                    </div>
+                    <ul class="list-group" style="overflow-y: auto; height: 342px;">
+                        @if (documents.Count == 0)
+                        {
+                            <small class="p-3 text-muted">No records.</small>
+                        }
+                        @foreach (var document in documents)
+                        {
+                            <li class="list-group-item">
+                                <div>@document.Title</div>
+                                <small class="text-muted">@document.CreatedBy @document.CreatedDate</small>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        Users <span class="badge rounded-pill bg-secondary">@users.Count</span>
+                    </div>
+                    <ul class="list-group" style="overflow-y: auto; height: 342px;">
+                        @if (users.Count == 0)
+                        {
+                            <small class="p-3 text-muted">No records.</small>
+                        }
+                        @foreach (var user in users)
+                        {
+                            <li class="list-group-item">
+                                <div>@user.FullName</div>
+                                <small class="text-muted">@user.CreatedBy @user.CreatedDate</small>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Notes <span class="badge rounded-pill bg-secondary">@notes.Count</span>
+                    </div>
+                    <ul class="list-group" style="overflow-y: auto; height: 342px;">
+                        @if (notes.Count == 0)
+                        {
+                            <small class="p-3 text-muted">No records.</small>
+                        }
+                        @foreach (var note in notes)
+                        {
+                            <li class="list-group-item">
+                                <div>@note.Note</div>
+                                <small class="text-muted">@note.CreatedBy @note.CreatedDate</small>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        Comments <span class="badge rounded-pill bg-secondary">@comments.Count</span>
+                    </div>
+                    <ul class="list-group" style="overflow-y: auto; height: 342px;">
+                        @if (comments.Count == 0)
+                        {
+                            <small class="p-3 text-muted">No records.</small>
+                        }
+                        @foreach (var comment in comments)
+                        {
+                            <li class="list-group-item">
+                                <div>@comment.Comment</div>
+                                <small class="text-muted">@comment.CreatedBy @comment.CreatedDate</small>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
         </dl>
-        <div>
-            <a href="@($"/cases/edit?id={model.Id}")">Edit</a> |
-            <a href="@($"/cases")">Back to List</a>
-        </div>
     }
 </div>
 
@@ -43,6 +130,10 @@
     private int Id { get; set; }
 
     private CaseModel? model;
+    private List<CommentModel> comments = new();
+    private List<DocumentModel> documents = new();
+    private List<NoteModel> notes = new();
+    private List<UserModel> users = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,6 +143,12 @@
         {
             NavigationManager.NavigateTo("notfound");
         }
+
+        // Load child objects
+        comments = service.GetCaseComments(Id);
+        documents = service.GetCaseDocuments(Id);
+        notes = service.GetCaseNotes(Id);
+        users = service.GetCaseUsers(Id);
 
         await base.OnInitializedAsync();
     }

@@ -96,8 +96,8 @@ namespace LCMS.Services
                 {
                     // Check for active
                     entities = activeOnly
-                        ? dbContext.Cases.Where(x => x.CaseIsActive).ToList()
-                        : dbContext.Cases.ToList();
+                        ? dbContext.Cases.Where(x => !x.CaseIsDeleted && x.CaseIsActive).ToList()
+                        : dbContext.Cases.Where(x => !x.CaseIsDeleted).ToList();
 
                     // Check for closed
                     if (excludeClosed)
@@ -355,15 +355,15 @@ namespace LCMS.Services
         public List<DocumentModel> GetCaseDocuments(int caseId)
         {
             // Get entities
-            List<CaseDocumentView> entities;
+            List<CaseDocument> entities;
             using (var dbContext = _dbContextFactory.CreateDbContext())
             {
-                entities = dbContext.CaseDocumentViews.Where(x => x.CaseId == caseId).ToList();
+                entities = dbContext.CaseDocuments.Where(x => x.CaseDocumentCaseId == caseId && !x.CaseDocumentIsDeleted).ToList();
             }
 
             // Convert to models
             var models = new List<DocumentModel>();
-            foreach (var entity in entities.OrderBy(x => x.CaseId))
+            foreach (var entity in entities.OrderBy(x => x.CaseDocumentId))
             {
                 var model = GetModel(entity);
                 if (model != null)
@@ -547,22 +547,23 @@ namespace LCMS.Services
         public List<UserModel> GetCaseUsers(int caseId)
         {
             // Get entities
-            List<UserView> entities;
+            List<User> entities;
             using (var dbContext = _dbContextFactory.CreateDbContext())
             {
-                entities = dbContext.CaseUserViews
-                    .Join(dbContext.UserViews,
-                        CaseUserView => CaseUserView.UserId,
-                        userView => userView.UserId,
-                        (CaseUserViews, userView) => new { CaseUserViews = CaseUserViews, UserView = userView })
-                    .Where(x => x.CaseUserViews.CaseId == caseId)
-                    .Select(x => x.UserView)
+                entities = dbContext.CaseUsers
+                    .Join(dbContext.Users,
+                        caseUser => caseUser.CaseUserUserId,
+                        user => user.UserId,
+                        (caseUsers, users) => new { CaseUsers = caseUsers, User = users })
+                    .Where(x => !x.CaseUsers.CaseUserIsDeleted && x.CaseUsers.CaseUserCaseId == caseId)
+                    .Select(x => x.User)
+                    .Where(x => !x.UserIsDeleted)
                     .ToList();
             }
 
             // Convert to models
             var models = new List<UserModel>();
-            foreach (var entity in entities.OrderBy(x => x.LastName).ThenBy(x => x.FirstName))
+            foreach (var entity in entities.OrderBy(x => x.UserLastName).ThenBy(x => x.UserFirstName))
             {
                 var model = UserService.GetModel(entity);
                 if (model != null)
@@ -707,6 +708,26 @@ namespace LCMS.Services
             {
                 Id = entity.CaseCommentId,
                 Comment = entity.Comment,
+                //CreatedDate = entity.CreatedDate,
+                //CreatedBy = entity.CreatedBy,
+                //ModifiedDate = entity.ModifiedDate,
+                //ModifiedBy = entity.ModifiedBy,
+            };
+
+            return model;
+        }
+
+        private static DocumentModel? GetModel(CaseDocument entity)
+        {
+            if (entity == null) return null;
+
+            var model = new DocumentModel
+            {
+                Id = entity.CaseDocumentId,
+                TypeId = entity.CaseDocumentTypeId,
+                Title = entity.CaseDocumentTitle,
+                Summary = entity.CaseDocumentSummary,
+                OriginalFileName = entity.CaseDocumentOriginalFileName,
                 //CreatedDate = entity.CreatedDate,
                 //CreatedBy = entity.CreatedBy,
                 //ModifiedDate = entity.ModifiedDate,

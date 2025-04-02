@@ -375,7 +375,7 @@ namespace LCMS.Services
 
         #region Private Methods
 
-        private static UserModel? GetModel(User? entity)
+        internal static UserModel? GetModel(User? entity)
         {
             if (entity == null) return null;
 

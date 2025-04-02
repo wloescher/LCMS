@@ -18,11 +18,11 @@
 }
 else
 {
-    <div class="row">
-        <div class="col-md-4">
-            <EditForm method="post" Model="Model" OnValidSubmit="UpdateCase" FormName="edit" Enhance>
+    <EditForm method="post" Model="Model" OnValidSubmit="UpdateCase" FormName="edit" Enhance>
+        <div class="row">
+            <div class="col-md-4">
                 <DataAnnotationsValidator />
-                <ValidationSummary role="alert"/>
+                <ValidationSummary role="alert" />
                 <input type="hidden" name="Model.Id" value="@Model.Id" />
                 <input type="hidden" name="Model.Guid" value="@Model.Guid" />
                 <div class="mb-3">
@@ -75,30 +75,37 @@ else
                     <InputText id="title" @bind-Value="Model.Title" class="form-control" />
                     <ValidationMessage For="() => Model.Title" class="text-danger" />
                 </div>
+            </div>
+            <div class="col-md-4">
                 <div class="mb-3">
                     <label for="summary" class="form-label">Summary</label>
-                    <InputText id="summary" @bind-Value="Model.Summary" class="form-control" />
+                    <InputTextArea id="summary" @bind-Value="Model.Summary" class="form-control" rows="8"></InputTextArea>
                     <ValidationMessage For="() => Model.Summary" class="text-danger" />
                 </div>
-                <div class="mb-3">
-                    <label for="isActive" class="form-label">IsActive</label>
-                    <InputCheckbox id="isActive" @bind-Value="Model.IsActive" class="form-check-input" />
-                    <ValidationMessage For="() => Model.IsActive" class="text-danger" />
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <InputCheckbox id="isActive" @bind-Value="Model.IsActive" class="form-check-input" />
+                            <label for="isActive" class="form-label">Active</label>
+                            <ValidationMessage For="() => Model.IsActive" class="text-danger" />
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <InputCheckbox id="isDeleted" @bind-Value="Model.IsDeleted" class="form-check-input" />
+                            <label for="isDeleted" class="form-label">Deleted</label>
+                            <ValidationMessage For="() => Model.IsDeleted" class="text-danger" />
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="isDeleted" class="form-label">IsDeleted</label>
-                    <InputCheckbox id="isDeleted" @bind-Value="Model.IsDeleted" class="form-check-input" />
-                    <ValidationMessage For="() => Model.IsDeleted" class="text-danger" />
+                <div class="text-end">
+                    <a class="btn btn-outline-secondary" href="/cases">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </EditForm>
+            </div>
         </div>
-    </div>
+    </EditForm>
 }
-
-<div>
-    <a href="/cases">Back to List</a>
-</div>
 
 @code {
     [SupplyParameterFromQuery]

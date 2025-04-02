@@ -313,13 +313,13 @@ namespace LCMS.Services
 
         private static void SeedCaseCommentData(LCMSDatabaseContext dbContext)
         {
-            if (dbContext.Cases == null)
+            if (dbContext.CaseComments == null)
             {
-                throw new NullReferenceException("Clients");
+                throw new NullReferenceException("CaseComments");
             }
 
             // Check for existing data
-            if (dbContext.Cases.Any())
+            if (dbContext.CaseComments.Any())
             {
                 return;
             }
@@ -350,13 +350,13 @@ namespace LCMS.Services
 
         private static void SeedCaseDocumentData(LCMSDatabaseContext dbContext)
         {
-            if (dbContext.Cases == null)
+            if (dbContext.CaseDocuments == null)
             {
-                throw new NullReferenceException("Clients");
+                throw new NullReferenceException("CaseDocuments");
             }
 
             // Check for existing data
-            if (dbContext.Cases.Any())
+            if (dbContext.CaseDocuments.Any())
             {
                 return;
             }
@@ -410,13 +410,13 @@ namespace LCMS.Services
 
         private static void SeedCaseNoteData(LCMSDatabaseContext dbContext)
         {
-            if (dbContext.Cases == null)
+            if (dbContext.CaseNotes == null)
             {
-                throw new NullReferenceException("Clients");
+                throw new NullReferenceException("CaseNotes");
             }
 
             // Check for existing data
-            if (dbContext.Cases.Any())
+            if (dbContext.CaseNotes.Any())
             {
                 return;
             }
@@ -447,13 +447,13 @@ namespace LCMS.Services
 
         private static void SeedCaseUserData(LCMSDatabaseContext dbContext)
         {
-            if (dbContext.Cases == null)
+            if (dbContext.CaseUsers == null)
             {
-                throw new NullReferenceException("Clients");
+                throw new NullReferenceException("CaseUsers");
             }
 
             // Check for existing data
-            if (dbContext.Cases.Any())
+            if (dbContext.CaseUsers.Any())
             {
                 return;
             }
@@ -467,11 +467,15 @@ namespace LCMS.Services
                     {
                         for (int j = 1; j <= 5; j++)
                         {
-                            caseUsers.Add(new CaseUser
+                            // Check to make sure combo doesn't already exist (to prevent duplicate entries)
+                            if (!caseUsers.Any(x => x.CaseUserCaseId == i && x.CaseUserUserId == j))
                             {
-                                CaseUserCaseId = i,
-                                CaseUserUserId = j
-                            });
+                                caseUsers.Add(new CaseUser
+                                {
+                                    CaseUserCaseId = i,
+                                    CaseUserUserId = j
+                                });
+                            }
                         }
                     }
                 }

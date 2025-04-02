@@ -1,5 +1,4 @@
 ﻿@page "/cases/create"
-@using Microsoft.AspNetCore.Authorization
 @using LCMS.Models
 @using static LCMS.Models.Enums
 @using LCMS.Services.Interfaces
@@ -12,11 +11,11 @@
 
 <h1>Create Case</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm method="post" Model="Model" OnValidSubmit="CreateCase" FormName="create" Enhance>
+<EditForm method="post" Model="Model" OnValidSubmit="CreateCase" FormName="create" Enhance>
+    <div class="row">
+        <div class="col-md-4">
             <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
+            <ValidationSummary class="text-danger" role="alert" />
             <div class="mb-3">
                 <label for="clientId" class="form-label">Client</label>
                 <InputSelect id="clientId" @bind-Value="Model.ClientId" class="form-control">
@@ -30,7 +29,7 @@
                         </option>
                     }
                 </InputSelect>
-                <ValidationMessage For="() => Model.ClientId" class="text-danger" /> 
+                <ValidationMessage For="() => Model.ClientId" class="text-danger" />
             </div>
             <div class="mb-3">
                 <label for="typeId" class="form-label">Type</label>
@@ -48,7 +47,7 @@
                 <ValidationMessage For="() => Model.TypeId" class="text-danger" />
             </div>
             <div class="mb-3">
-                <label for="statusId" class="form-label">Status</label> 
+                <label for="statusId" class="form-label">Status</label>
                 <InputSelect id="statusId" @bind-Value="Model.StatusId" class="form-control">
                     <option value="">
                         Select...
@@ -61,32 +60,44 @@
                     }
                 </InputSelect>
                 <ValidationMessage For="() => Model.StatusId" class="text-danger" />
-            </div>        
+            </div>
+        </div>
+        <div class="col-md-4">
             <div class="mb-3">
-                <label for="title" class="form-label">Title</label> 
-                <InputText id="title" @bind-Value="Model.Title" class="form-control" /> 
-                <ValidationMessage For="() => Model.Title" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="summary" class="form-label">Summary</label> 
-                <InputText id="summary" @bind-Value="Model.Summary" class="form-control" /> 
-                <ValidationMessage For="() => Model.Summary" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+                <label for="summary" class="form-label">Summary</label>
+                <InputTextArea id="summary" @bind-Value="Model.Summary" class="form-control" rows="8"></InputTextArea>
+                <ValidationMessage For="() => Model.Summary" class="text-danger" />
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="mb-3">
+                        <InputCheckbox id="isActive" @bind-Value="Model.IsActive" class="form-check-input" />
+                        <label for="isActive" class="form-label">Active</label>
+                        <ValidationMessage For="() => Model.IsActive" class="text-danger" />
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="mb-3">
+                        <InputCheckbox id="isDeleted" @bind-Value="Model.IsDeleted" class="form-check-input" />
+                        <label for="isDeleted" class="form-label">Deleted</label>
+                        <ValidationMessage For="() => Model.IsDeleted" class="text-danger" />
+                    </div>
+                </div>
+            </div>
+            <div class="text-end">
+                <a class="btn btn-outline-secondary" href="/cases">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
     </div>
-</div>
-
-<div>
-    <a href="/cases">Back to List</a>
-</div>
+</EditForm>
 
 @code {
     [SupplyParameterFromForm]
     private CaseModel Model { get; set; } = new();
 
     private List<KeyValuePair<int, string>> Clients = new();
-        
+
     protected override async Task OnInitializedAsync()
     {
         var clientService = ServiceProvider.GetRequiredService<IClientService>();

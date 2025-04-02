@@ -11,42 +11,38 @@
 <PageTitle>Delete</PageTitle>
 
 <h1>Delete Case</h1>
+<hr />
 <div>
     <p>Are you sure you want to delete this?</p>
     @if (model is null)
     {
         <p><em>Loading...</em></p>
     }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">Client</dt>
-            <dd class="col-sm-10">@model.ClientId</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">Type</dt>
-            <dd class="col-sm-10">@model.Type</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">Status</dt>
-            <dd class="col-sm-10">@model.Status</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">Title</dt>
-            <dd class="col-sm-10">@model.Title</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">Summary</dt>
-            <dd class="col-sm-10">@model.Summary</dd>
-        </dl>
-            <dl class="row">
-            <dt class="col-sm-2">IsActive</dt>
-            <dd class="col-sm-10">@model.IsActive</dd>
-            </dl>
+    else
+    {
+        <div class="row">
+            <div class="col-sm-4">
+                <dt class="col-sm-2">Client</dt>
+                <dd class="col-sm-10">@model.ClientName</dd>
+                <dt class="col-sm-2">Type</dt>
+                <dd class="col-sm-10">@model.Type</dd>
+                <dt class="col-sm-2">Status</dt>
+                <dd class="col-sm-10">@model.Status</dd>
+                <dt class="col-sm-2">Title</dt>
+                <dd class="col-sm-10">@model.Title</dd>
+                <dt class="col-sm-2">Summary</dt>
+                <dd class="col-sm-10">@model.Summary</dd>
+                <dt class="col-sm-2">Active</dt>
+                <dd class="col-sm-10">@model.IsActive</dd>
 
-        <EditForm method="post" Model="model" OnValidSubmit="DeleteCase" FormName="delete" Enhance>
-            <button type="submit" class="btn btn-danger" disabled="@(model is null)">Delete</button> |
-            <a href="/cases">Back to List</a>
-        </EditForm>
+                <EditForm method="post" Model="model" OnValidSubmit="DeleteCase" FormName="delete" Enhance>
+                    <div class="text-end">
+                        <a class="btn btn-outline-secondary" href="/cases">Cancel</a>
+                        <button type="submit" class="btn btn-danger" disabled="@(model is null)">Delete</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
     }
 </div>
 
@@ -75,4 +71,4 @@
         NavigationManager.NavigateTo("/cases");
     }
 
-}
+    }
