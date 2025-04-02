@@ -1,4 +1,5 @@
 ﻿@page "/cases/edit"
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
 @using LCMS.Models
 @using static LCMS.Models.Enums
@@ -6,6 +7,7 @@
 @using LCMS.Blazor.Components.Pages.BaseClasses
 @inject NavigationManager NavigationManager
 @inject IServiceProvider ServiceProvider
+@attribute [Authorize]
 @inherits AuthenticatedPageBase
 
 <PageTitle>Edit</PageTitle>

@@ -1,9 +1,11 @@
 ﻿@page "/cases/details"
+@using Microsoft.AspNetCore.Authorization
 @using LCMS.Models
 @using LCMS.Services.Interfaces
 @using LCMS.Blazor.Components.Pages.BaseClasses
 @inject NavigationManager NavigationManager
 @inject IServiceProvider ServiceProvider
+@attribute [Authorize]
 @inherits AuthenticatedPageBase
 
 <PageTitle>Details</PageTitle>

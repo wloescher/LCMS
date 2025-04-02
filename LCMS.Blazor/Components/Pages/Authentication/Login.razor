@@ -9,32 +9,32 @@
 @inject NavigationManager NavigationManager
 @inject IServiceProvider ServiceProvider
 
-<h3>Login</h3>
-
-<div class="row">
-    <EditForm Model="Model" OnValidSubmit="Authenticate" FormName="LoginForm">
-        <div class="mb-3 text-center flex-column">
-            <img src="images/avatar.png" style="max-height: 5rem;" />
-            <h3>Login</h3>
+<EditForm Model="Model" OnValidSubmit="Authenticate" FormName="LoginForm">
+    <div class="row justify-content-center">
+        <div class="col-md-3">
+            <div class="mb-3 text-center flex-column">
+                <img src="images/avatar.png" style="max-height: 5rem;" />
+                <h3>LCMS.Blazor</h3>
+            </div>
+            <div class="mb-3">
+                <label>UserName</label>
+                <InputText @bind-Value="Model.UserName" class="form-control" placeholder="UserName" />
+                <ValidationMessage For="() => Model.UserName" />
+            </div>
+            <div class="mb-3">
+                <label>Password</label>
+                <InputText @bind-Value="Model.Password" class="form-control" placeholder="Password" />
+                <ValidationMessage For="() => Model.Password" />
+            </div>
+            <div class="mb-3 text-center">
+                <span class="text-danger">@errorMessage</span>
+            </div>
+            <div class="mb-3 text-end">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
         </div>
-        <div class="mb-3">
-            <label>UserName</label>
-            <InputText @bind-Value="Model.UserName" class="form-control" placeholder="UserName" />
-            <ValidationMessage For="() => Model.UserName" />
-        </div>
-        <div class="mb-3">
-            <label>Password</label>
-            <InputText @bind-Value="Model.Password" class="form-control" placeholder="Password" />
-            <ValidationMessage For="() => Model.Password" />
-        </div>
-        <div class="mb-3 text-center">
-            <span class="text-danger">@errorMessage</span>
-        </div>
-        <div class="mb-3 text-center">
-            <button type="submit" class="btn btn-primary">Login</button>
-        </div>
-    </EditForm>
-</div>
+    </div>
+</EditForm>
 
 @code {
     [CascadingParameter]

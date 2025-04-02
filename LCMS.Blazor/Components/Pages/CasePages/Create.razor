@@ -1,10 +1,12 @@
 ﻿@page "/cases/create"
+@using Microsoft.AspNetCore.Authorization
 @using LCMS.Models
 @using static LCMS.Models.Enums
 @using LCMS.Services.Interfaces
 @using LCMS.Blazor.Components.Pages.BaseClasses
 @inject NavigationManager NavigationManager
 @inject IServiceProvider ServiceProvider
+@attribute [Authorize]
 @inherits AuthenticatedPageBase
 
 <PageTitle>Create</PageTitle>

@@ -10,11 +10,16 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Clients</h1>
-
-<p>
-    <a href="clients/create">Create New</a>
-</p>
+<div class="row">
+    <div class="col-sm-6">
+        <h1>Clients <span class="badge rounded-pill bg-secondary">@models.Count</span></h1>
+    </div>
+    <div class="col-sm-6 text-end">
+        <input type="search" @bind="nameFilter" @bind:event="oninput" placeholder="Filter by Name..." />
+        <a class="btn btn-sm btn-primary" href="/clients/create">Create New</a>
+    </div>
+</div>
+<hr />
 
 <div>
     <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
@@ -27,15 +32,16 @@
         <PropertyColumn Property="model => model.PhoneNumber" />
         <PropertyColumn Property="model => model.Url" />
         <PropertyColumn Property="model => model.IsActive" />
-
         <TemplateColumn Context="model">
-            <a href="@($"clients/details?id={model.Id}")">Details</a>
-            | <a href="@($"clients/edit?id={model.Id}")">Edit</a>
-            <AuthorizeView Roles="Admin">
-                <Authorized>
-                    | <a href="@($"clients/delete?id={model.Id}")">Delete</a>
-                </Authorized>
-            </AuthorizeView>
+            <div style="text-align: right;">
+                <a class="btn btn-outline-secondary" href="@($"cases/details?id={model.Id}")">Details</a>
+                <a class="btn btn-primary" href="@($"cases/edit?id={model.Id}")">Edit</a>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <a class="btn btn-danger" href="@($"cases/delete?id={model.Id}")">Delete</a>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
         </TemplateColumn>
     </QuickGrid>
 </div>
@@ -45,7 +51,7 @@
     private List<ClientModel> models = new();
     private string nameFilter = string.Empty;
     private IQueryable<ClientModel> FilteredModels => models.Where(x => x.Name.ToLower().Contains(nameFilter)).AsQueryable();
-    private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
     protected override async Task OnInitializedAsync()
     {

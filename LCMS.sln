@@ -23,6 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCMS.Utilities", "LCMS.Util
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{3D88FC42-07B0-4AB1-A75D-94ECD0141C78}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\..\Downloads\lcms-create-db.sql = ..\..\..\Downloads\lcms-create-db.sql
 		..\..\..\Downloads\lcms-db-overview.pdf = ..\..\..\Downloads\lcms-db-overview.pdf
 	EndProjectSection
 EndProject

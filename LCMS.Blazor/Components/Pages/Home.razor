@@ -1,27 +1,113 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using LCMS.Models
+@using LCMS.Services.Interfaces
 @using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
 @attribute [Authorize]
 @inherits AuthenticatedPageBase
 
 <PageTitle>Home</PageTitle>
 
-<div class="row">
-    <div class="col-12">
-        <h1 class="fw-bolder">Welcome to LCMS.Blazor!</h1>
-    </div>
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <AuthorizeView>
-                    <NotAuthorized>
-                        <span>You are not logged in. Please <a class="fw-bolder" href="/login">click here</a> to login.</span>
-                    </NotAuthorized>
+<h3>Cases <span class="badge rounded-pill bg-secondary">@cases.Count</span></h3>
+<div>
+    <QuickGrid Class="table" Items="FilteredCases" Pagination="casePagination">
+        <PropertyColumn Property="model => model.Title" Sortable="true" />
+        <PropertyColumn Property="model => model.ClientName" Sortable="true" />
+        <PropertyColumn Property="model => model.Type" Sortable="true" />
+        <PropertyColumn Property="model => model.Status" Sortable="true" />
+        <TemplateColumn Context="model">
+            <div style="text-align: right;">
+                <a class="btn btn-outline-secondary" href="@($"cases/details?id={model.Id}")">Details</a>
+                <a class="btn btn-primary" href="@($"cases/edit?id={model.Id}")">Edit</a>
+                <AuthorizeView Roles="Admin">
                     <Authorized>
-                        <span>Logged in as <b>@_currentUserFullName</b>. <a class="fw-bolder" href="/logout">Click here</a> to logout.</span>
+                        <a class="btn btn-danger" href="@($"cases/delete?id={model.Id}")">Delete</a>
                     </Authorized>
                 </AuthorizeView>
             </div>
-        </div>
-    </div>
+        </TemplateColumn>
+    </QuickGrid>
 </div>
+<Paginator State="casePagination" />
+
+<h3 class="mt-4">Clients <span class="badge rounded-pill bg-secondary">@clients.Count</span></h3>
+<div>
+    <QuickGrid Class="table" Items="FilteredClients" Pagination="clientPagination">
+        <PropertyColumn Property="model => model.Name" />
+        <PropertyColumn Property="model => model.Type" />
+        <PropertyColumn Property="model => model.City" />
+        <PropertyColumn Property="model => model.Region" />
+        <PropertyColumn Property="model => model.PhoneNumber" />
+        <TemplateColumn Context="model">
+            <div style="text-align: right;">
+                <a class="btn btn-outline-secondary" href="@($"clients/details?id={model.Id}")">Details</a>
+                <a class="btn btn-primary" href="@($"clients/edit?id={model.Id}")">Edit</a>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <a class="btn btn-danger" href="@($"clients/delete?id={model.Id}")">Delete</a>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+<Paginator State="clientPagination" />
+
+<h3 class="mt-4">Users <span class="badge rounded-pill bg-secondary">@users.Count</span></h3>
+<div>
+    <QuickGrid Class="table" Items="FilteredUsers" Pagination="userPagination">
+        <PropertyColumn Property="user => user.FullName" Sortable="true" />
+        <PropertyColumn Property="user => user.Type" Sortable="true" />
+        <PropertyColumn Property="user => user.EmailAddress" Sortable="true" />
+        <PropertyColumn Property="user => user.City" Sortable="true" />
+        <PropertyColumn Property="user => user.Region" Sortable="true" />
+        <PropertyColumn Property="user => user.PhoneNumber" Sortable="true" />
+        <TemplateColumn Context="model">
+            <div style="text-align: right;">
+                <a class="btn btn-outline-secondary" href="@($"users/details?id={model.Id}")">Details</a>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <a class="btn btn-primary" href="@($"users/edit?id={model.Id}")">Edit</a>
+                        <a class="btn btn-danger" href="@($"users/delete?id={model.Id}")">Delete</a>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+<Paginator State="userPagination" />
+
+@code {
+    private List<CaseModel> cases = new();
+    private string caseTitleFilter = string.Empty;
+    private IQueryable<CaseModel> FilteredCases => cases.Where(x => x.Title.ToLower().Contains(caseTitleFilter)).AsQueryable();
+    private PaginationState casePagination = new PaginationState { ItemsPerPage = 10 };
+
+    private List<ClientModel> clients = new();
+    private string clientNameFilter = string.Empty;
+    private IQueryable<ClientModel> FilteredClients => clients.Where(x => x.Name.ToLower().Contains(clientNameFilter)).AsQueryable();
+    private PaginationState clientPagination = new PaginationState { ItemsPerPage = 10 };
+
+    private List<UserModel> users = new();
+    private string userNameFilter = string.Empty;
+    private IQueryable<UserModel> FilteredUsers => users.Where(x => x.FullName.ToLower().Contains(userNameFilter)).AsQueryable();
+    private PaginationState userPagination = new PaginationState { ItemsPerPage = 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var caseService = ServiceProvider.GetRequiredService<ICaseService>();
+        cases = caseService.GetCases();
+
+        var clientService = ServiceProvider.GetRequiredService<IClientService>();
+        clients = clientService.GetClients();
+
+        var userService = ServiceProvider.GetRequiredService<IUserService>();
+        users = userService.GetUsers();
+
+        await base.OnInitializedAsync();
+    }
+}

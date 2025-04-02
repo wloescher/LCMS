@@ -10,16 +10,16 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Users</h1>
-
-<div>
-    <input type="search" @bind="nameFilter" @bind:event="oninput" />
+<div class="row">
+    <div class="col-sm-6">
+        <h1>Users <span class="badge rounded-pill bg-secondary">@models.Count</span></h1>
+    </div>
+    <div class="col-sm-6 text-end">
+        <input type="search" @bind="nameFilter" @bind:event="oninput" placeholder="Filter by Name..." />
+        <a class="btn btn-sm btn-primary" href="users/create">Create New</a>
+    </div>
 </div>
-
-<p>
-    <a href="users/create">Create New</a>
-</p>
-
+<hr />
 <div>
     <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
         <PropertyColumn Property="user => user.FullName" Sortable="true" />
@@ -31,13 +31,15 @@
         <PropertyColumn Property="user => user.PhoneNumber" Sortable="true" />
         <PropertyColumn Property="user => user.IsActive" Sortable="true" />
         <TemplateColumn Context="model">
-            <a href="@($"users/details?id={model.Id}")">Details</a>
-            <AuthorizeView Roles="Admin">
-                <Authorized>
-                    | <a href="@($"users/edit?id={model.Id}")">Edit</a>
-                    | <a href="@($"users/delete?id={model.Id}")">Delete</a>
-                </Authorized>
-            </AuthorizeView>
+            <div style="text-align: right;">
+                <a class="btn btn-outline-secondary" href="@($"users/details?id={model.Id}")">Details</a>
+                <a class="btn btn-primary" href="@($"users/edit?id={model.Id}")">Edit</a>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <a class="btn btn-danger" href="@($"users/delete?id={model.Id}")">Delete</a>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
         </TemplateColumn>
     </QuickGrid>
 </div>
@@ -47,7 +49,7 @@
     private List<UserModel> models = new();
     private string nameFilter = string.Empty;
     private IQueryable<UserModel> FilteredModels => models.Where(x => x.FullName.ToLower().Contains(nameFilter)).AsQueryable();
-    private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
     protected override async Task OnInitializedAsync()
     {

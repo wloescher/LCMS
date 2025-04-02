@@ -12,25 +12,27 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>User Accounts</h1>
-
-<div>
-    <input type="search" @bind="userNameFilter" @bind:event="oninput" />
+<div class="row">
+    <div class="col-sm-6">
+        <h1>User Accounts <span class="badge rounded-pill bg-secondary">@models.Count</span></h1>
+    </div>
+    <div class="col-sm-6 text-end">
+        <input type="search" @bind="userNameFilter" @bind:event="oninput" placeholder="Filter by UserName..." />
+        <a class="btn btn-sm btn-primary" href="useraccounts/create">Create New</a>
+    </div>
 </div>
-
-<p>
-    <a href="useraccounts/create">Create New</a>
-</p>
-
+<hr />
 <div>
     <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
         <PropertyColumn Property="model => model.UserName" Sortable="true" />
         <PropertyColumn Property="model => model.IsActive" Sortable="true" />
         <PropertyColumn Property="model => model.IsDeleted" Sortable="true" />
         <TemplateColumn Context="model">
-            <a href="@($"useraccounts/details?id={model.Id}")">Details</a> |
-            <a href="@($"useraccounts/edit?id={model.Id}")">Edit</a> |
-            <a href="@($"useraccounts/delete?id={model.Id}")">Delete</a>
+            <div style="text-align: right;">
+                <a class="btn btn-outline-secondary" href="@($"useraccounts/details?id={model.Id}")">Details</a>
+                <a class="btn btn-primary" href="@($"useraccounts/edit?id={model.Id}")">Edit</a>
+                <a class="btn btn-danger" href="@($"useraccounts/delete?id={model.Id}")">Delete</a>
+            </div>
         </TemplateColumn>
     </QuickGrid>
 </div>
@@ -40,7 +42,7 @@
     private List<UserAccountModel> models = new();
     private string userNameFilter = string.Empty;
     private IQueryable<UserAccountModel> FilteredModels => models.Where(x => x.UserName.Contains(userNameFilter)).AsQueryable();
-    private PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
     protected override async Task OnInitializedAsync()
     {
