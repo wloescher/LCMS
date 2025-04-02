@@ -21,6 +21,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCMS.Services", "LCMS.Servi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCMS.Utilities", "LCMS.Utilities\LCMS.Utilities.csproj", "{F9384EA1-2F3D-46CF-89E7-05D48400B0E4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{08697030-068C-432B-A474-3194840BF65B}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\lcms-create-db.sql = Documentation\lcms-create-db.sql
+		Documentation\lcms-db-overview.pdf = Documentation\lcms-db-overview.pdf
+		Documentation\lcms.drawio = Documentation\lcms.drawio
+		READ.md = READ.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
