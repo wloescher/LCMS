@@ -9,6 +9,18 @@ Web application that enables attorneys to manage legal cases, associate clients 
 
 ---
 
+## Setup ##
+
+1. Run the db script file "lcms-create-db.sql" to create the SQL database.
+2. Right click on the Presentation/LCMS.Blazor project and select "Set as Startup Project".
+3. To launch the application, hit F5 or selected Debug > Start Debugging.
+4. To log in, choose any of the following username / password combos:
+   - admin / admin
+   - attorney / attorney
+   - paralegal / paralegal
+
+---
+
 ## Key Requirements ##
 
 ### 1. Authentication & Authorization ###
