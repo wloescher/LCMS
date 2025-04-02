@@ -21,12 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCMS.Services", "LCMS.Servi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCMS.Utilities", "LCMS.Utilities\LCMS.Utilities.csproj", "{F9384EA1-2F3D-46CF-89E7-05D48400B0E4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{3D88FC42-07B0-4AB1-A75D-94ECD0141C78}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\..\Downloads\lcms-create-db.sql = ..\..\..\Downloads\lcms-create-db.sql
-		..\..\..\Downloads\lcms-db-overview.pdf = ..\..\..\Downloads\lcms-db-overview.pdf
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +63,7 @@ Global
 		{A548234B-861D-4374-87EC-771A2EC6BF7A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{F0202516-8459-4995-8FA4-603F0C914DBE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{C29A8B87-8799-4D59-99BD-14F58100C3BA} = {F2A2B655-317D-48F1-8B73-D57C97FFB51E}
+		{F9384EA1-2F3D-46CF-89E7-05D48400B0E4} = {F2A2B655-317D-48F1-8B73-D57C97FFB51E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DBC289DB-8DEC-4463-B84E-0CDE0F4CCF27}
