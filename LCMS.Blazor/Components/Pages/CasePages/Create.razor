@@ -41,7 +41,7 @@
                     </option>
                     @foreach (Enums.CaseType value in Enum.GetValues(typeof(Enums.CaseType)))
                     {
-                        <option checked="@(Model.TypeId == (int)value)" value="@value">
+                        <option checked="@(Model.TypeId == (int)value)" value="@((int)value)">
                             @value.ToString()
                         </option>
                     }
@@ -56,12 +56,17 @@
                     </option>
                     @foreach (Enums.CaseStatus value in Enum.GetValues(typeof(Enums.CaseStatus)))
                     {
-                        <option checked="@(Model.TypeId == (int)value)" value="@value">
+                        <option checked="@(Model.TypeId == (int)value)" value="@((int)value)">
                             @value.ToString()
                         </option>
                     }
                 </InputSelect>
                 <ValidationMessage For="() => Model.StatusId" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <InputText id="title" @bind-Value="Model.Title" class="form-control" />
+                <ValidationMessage For="() => Model.Title" class="text-danger" />
             </div>
         </div>
         <div class="col-md-4">

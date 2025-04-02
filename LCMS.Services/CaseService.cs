@@ -30,6 +30,7 @@ namespace LCMS.Services
                 CaseStatusId = (int)model.Status,
                 CaseTitle = model.Title.Trim(),
                 CaseSummary = model.Summary?.Trim(),
+                CaseIsActive = model.IsActive,
             };
 
             bool dbUpdated;
@@ -45,6 +46,9 @@ namespace LCMS.Services
                 using var scope = _serviceProvider.CreateScope();
                 var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
                 auditService.CreateCase(entity, userId);
+
+                // Update cache
+                GetCases(true, true, true);
             }
 
             return GetModel(entity);
@@ -179,6 +183,9 @@ namespace LCMS.Services
                 using var scope = _serviceProvider.CreateScope();
                 var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
                 auditService.UpdateCase(entityBefore, entityAfter, userId);
+
+                // Update cache
+                GetCases(true, true, true);
             }
 
             return dbUpdated;
@@ -216,6 +223,9 @@ namespace LCMS.Services
                 using var scope = _serviceProvider.CreateScope();
                 var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
                 auditService.DeleteCase(entityBefore, entityAfter, userId);
+
+                // Update cache
+                GetCases(true, true, true);
             }
 
             return dbUpdated;
