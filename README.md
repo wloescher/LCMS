@@ -49,9 +49,3 @@ Web application that enables attorneys to manage legal cases, associate clients 
 ### 5. Reporting & Search ###
 - [ ] Implement a search functionality for cases and clients.
 - [ ] Generate basic reports (e.g., open cases, upcoming court dates).
-
----
-
-## CURRENT ISSUES ##
-- Form submission throwing error related to Antiforgery Token issue
-- Cases and Clients pages throwing error related to data mapping to NULL value fields
