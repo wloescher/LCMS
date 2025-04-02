@@ -22,10 +22,10 @@
 
 <div>
     <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
+        <PropertyColumn Property="model => model.Title" Sortable="true" />
         <PropertyColumn Property="model => model.ClientName" Sortable="true" />
         <PropertyColumn Property="model => model.Type" Sortable="true" />
         <PropertyColumn Property="model => model.Status" Sortable="true" />
-        <PropertyColumn Property="model => model.Title" Sortable="true" />
         <PropertyColumn Property="model => model.Summary" Sortable="true" />
         <PropertyColumn Property="model => model.IsActive" Sortable="true" />
         <TemplateColumn Context="model">

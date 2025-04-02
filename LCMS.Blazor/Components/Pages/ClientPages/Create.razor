@@ -1,5 +1,6 @@
 ﻿@page "/clients/create"
 @using LCMS.Models
+@using static LCMS.Models.Enums
 @using LCMS.Services.Interfaces
 @using LCMS.Blazor.Components.Pages.BaseClasses
 @inject NavigationManager NavigationManager
@@ -14,12 +15,22 @@
     <div class="col-md-4">
         <EditForm method="post" Model="Model" OnValidSubmit="CreateClient" FormName="create" Enhance>
             <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>      
+            <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
-                <label for="typeId" class="form-label">Type</label> 
-                <InputNumber id="typeId" @bind-Value="Model.TypeId" class="form-control" />
-                <ValidationMessage For="() => Model.TypeId" class="text-danger" /> 
-            </div>        
+                <label for="typeId" class="form-label">Type</label>
+                <InputSelect id="typeId" @bind-Value="Model.TypeId" class="form-control">
+                    <option value="">
+                        Select...
+                    </option>
+                    @foreach (Enums.ClientType value in Enum.GetValues(typeof(Enums.ClientType)))
+                    {
+                        <option checked="@(Model.TypeId == (int)value)" value="@value">
+                            @value.ToString()
+                        </option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Model.TypeId" class="text-danger" />
+            </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label> 
                 <InputText id="name" @bind-Value="Model.Name" class="form-control" aria-required="true"/> 

@@ -62,7 +62,18 @@ namespace LCMS.Services
             {
                 entity = dbContext.Cases.Find(caseId);
             }
-            return GetModel(entity);
+
+            var model = GetModel(entity);
+            if (model != null)
+            {
+                // HACK: Manually populate ClientName
+                using var scope = _serviceProvider.CreateScope();
+                var clientService = scope.ServiceProvider.GetRequiredService<IClientService>();
+                var clients = clientService.GetClientKeyValuePairs(false, false);
+                model.ClientName = clients.FirstOrDefault(x => x.Key == model.ClientId).Value;
+            }
+
+            return model;
         }
 
         /// <summary>
@@ -79,24 +90,27 @@ namespace LCMS.Services
             var models = _memoryCache.Get(cacheKey) as List<CaseModel>;
             if (models == null || resetCache)
             {
-                IQueryable<CaseView>? queryableEntities;
-                var entities = new List<CaseView>();
+                var entities = new List<Case>();
 
                 using (var dbContext = _dbContextFactory.CreateDbContext())
                 {
                     // Check for active
-                    queryableEntities = activeOnly
-                        ? dbContext.CaseViews.Where(x => x.IsActive)
-                        : dbContext.CaseViews;
+                    entities = activeOnly
+                        ? dbContext.Cases.Where(x => x.CaseIsActive).ToList()
+                        : dbContext.Cases.ToList();
 
                     // Check for closed
                     if (excludeClosed)
                     {
-                        queryableEntities = queryableEntities.Where(x => x.StatusId != (int)CaseStatus.Closed);
+                        entities = entities.Where(x => x.CaseStatusId != (int)CaseStatus.Closed).ToList();
                     }
-
-                    entities = queryableEntities.ToList();
                 }
+
+                // HACK: ClientView isn't working due to NULL value mapping,
+                // so for now we'll have to manually populate ClientName
+                using var scope = _serviceProvider.CreateScope();
+                var clientService = scope.ServiceProvider.GetRequiredService<IClientService>();
+                var clients = clientService.GetClientKeyValuePairs(false, false);
 
                 // Convert to models
                 models = new List<CaseModel>();
@@ -105,6 +119,7 @@ namespace LCMS.Services
                     var model = GetModel(entity);
                     if (model != null)
                     {
+                        model.ClientName = clients.FirstOrDefault(x => x.Key == model.ClientId).Value;
                         models.Add(model);
                     }
                 }

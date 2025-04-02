@@ -1,6 +1,7 @@
 ﻿@page "/clients/edit"
 @using Microsoft.EntityFrameworkCore
 @using LCMS.Models
+@using static LCMS.Models.Enums
 @using LCMS.Services.Interfaces
 @using LCMS.Blazor.Components.Pages.BaseClasses
 @inject NavigationManager NavigationManager
@@ -26,7 +27,17 @@ else
                 <input type="hidden" name="Model.Guid" value="@Model.Guid" />
                 <div class="mb-3">
                     <label for="typeId" class="form-label">Type</label>
-                    <InputNumber id="typeId" @bind-Value="Model.TypeId" class="form-control" />
+                    <InputSelect id="typeId" @bind-Value="Model.TypeId" class="form-control">
+                        <option value="">
+                            Select...
+                        </option>
+                        @foreach (Enums.ClientType value in Enum.GetValues(typeof(Enums.ClientType)))
+                        {
+                            <option checked="@(Model.TypeId == (int)value)" value="@value">
+                                @value.ToString()
+                            </option>
+                        }
+                    </InputSelect>
                     <ValidationMessage For="() => Model.TypeId" class="text-danger" />
                 </div>
                 <div class="mb-3">

@@ -1,6 +1,7 @@
 ﻿@page "/cases/create"
 @using Microsoft.AspNetCore.Authorization
 @using LCMS.Models
+@using static LCMS.Models.Enums
 @using LCMS.Services.Interfaces
 @using LCMS.Blazor.Components.Pages.BaseClasses
 @inject NavigationManager NavigationManager
@@ -18,18 +19,48 @@
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
                 <label for="clientId" class="form-label">Client</label>
-                <InputNumber id="clientId" @bind-Value="Model.ClientId" class="form-control" /> 
+                <InputSelect id="clientId" @bind-Value="Model.ClientId" class="form-control">
+                    <option value="">
+                        Select...
+                    </option>
+                    @foreach (var client in Clients)
+                    {
+                        <option checked="@(Model.ClientId == client.Key)" value="@client.Key">
+                            @client.Value
+                        </option>
+                    }
+                </InputSelect>
                 <ValidationMessage For="() => Model.ClientId" class="text-danger" /> 
-            </div>        
+            </div>
             <div class="mb-3">
-                <label for="typeId" class="form-label">Type</label> 
-                <InputNumber id="typeId" @bind-Value="Model.TypeId" class="form-control" /> 
-                <ValidationMessage For="() => Model.TypeId" class="text-danger" /> 
-            </div>        
+                <label for="typeId" class="form-label">Type</label>
+                <InputSelect id="typeId" @bind-Value="Model.TypeId" class="form-control">
+                    <option value="">
+                        Select...
+                    </option>
+                    @foreach (Enums.CaseType value in Enum.GetValues(typeof(Enums.CaseType)))
+                    {
+                        <option checked="@(Model.TypeId == (int)value)" value="@value">
+                            @value.ToString()
+                        </option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Model.TypeId" class="text-danger" />
+            </div>
             <div class="mb-3">
                 <label for="statusId" class="form-label">Status</label> 
-                <InputNumber id="statusId" @bind-Value="Model.StatusId" class="form-control" /> 
-                <ValidationMessage For="() => Model.StatusId" class="text-danger" /> 
+                <InputSelect id="statusId" @bind-Value="Model.StatusId" class="form-control">
+                    <option value="">
+                        Select...
+                    </option>
+                    @foreach (Enums.CaseStatus value in Enum.GetValues(typeof(Enums.CaseStatus)))
+                    {
+                        <option checked="@(Model.TypeId == (int)value)" value="@value">
+                            @value.ToString()
+                        </option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Model.StatusId" class="text-danger" />
             </div>        
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label> 
@@ -53,6 +84,16 @@
 @code {
     [SupplyParameterFromForm]
     private CaseModel Model { get; set; } = new();
+
+    private List<KeyValuePair<int, string>> Clients = new();
+        
+    protected override async Task OnInitializedAsync()
+    {
+        var clientService = ServiceProvider.GetRequiredService<IClientService>();
+        Clients = clientService.GetClientKeyValuePairs(true, false);
+
+        await base.OnInitializedAsync();
+    }
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private void CreateCase()

@@ -1,6 +1,7 @@
 ﻿@page "/users/create"
 @using Microsoft.AspNetCore.Authorization
 @using LCMS.Models
+@using static LCMS.Models.Enums
 @using LCMS.Services.Interfaces
 @using LCMS.Blazor.Components.Pages.BaseClasses
 @inject NavigationManager NavigationManager
@@ -18,8 +19,18 @@
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
-                <label for="typeId" class="form-label">User Type</label>
-                <InputNumber id="typeId" @bind-Value="Model.TypeId" class="form-control" />
+                <label for="typeId" class="form-label">Type</label>
+                <InputSelect id="typeId" @bind-Value="Model.TypeId" class="form-control">
+                    <option value="">
+                        Select...
+                    </option>
+                    @foreach (Enums.UserType value in Enum.GetValues(typeof(Enums.UserType)))
+                    {
+                        <option checked="@(Model.TypeId == (int)value)" value="@value">
+                            @value.ToString()
+                        </option>
+                    }
+                </InputSelect>
                 <ValidationMessage For="() => Model.TypeId" class="text-danger" />
             </div>
             <div class="mb-3">
@@ -76,11 +87,6 @@
                 <label for="phoneNumber" class="form-label">Phone Number</label>
                 <InputText id="phoneNumber" @bind-Value="Model.PhoneNumber" class="form-control" />
                 <ValidationMessage For="() => Model.PhoneNumber" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="isActive" class="form-label">IsActive</label>
-                <InputCheckbox id="isActive" @bind-Value="Model.IsActive" class="form-check-input" />
-                <ValidationMessage For="() => Model.IsActive" class="text-danger" />
             </div>
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>

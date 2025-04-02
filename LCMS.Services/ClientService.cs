@@ -81,25 +81,25 @@ namespace LCMS.Services
             var models = _memoryCache.Get(cacheKey) as List<ClientModel>;
             if (models == null || resetCache)
             {
-                List<ClientView> entities;
+                List<Client> entities;
 
                 // Check for active
                 using (var dbContext = _dbContextFactory.CreateDbContext())
                 {
                     entities = activeOnly
-                        ? dbContext.ClientViews.Where(x => x.IsActive).ToList()
-                        : dbContext.ClientViews.ToList();
+                        ? dbContext.Clients.Where(x => x.ClientIsActive).ToList()
+                        : dbContext.Clients.ToList();
                 }
 
                 // Check for internal
                 if (excludeInternal)
                 {
-                    entities = entities.Where(x => x.TypeId != (int)ClientType.Internal).ToList();
+                    entities = entities.Where(x => x.ClientTypeId != (int)ClientType.Internal).ToList();
                 }
 
                 // Convert to models
                 models = new List<ClientModel>();
-                foreach (var entity in entities.OrderBy(x => x.Name))
+                foreach (var entity in entities.OrderBy(x => x.ClientName))
                 {
                     var model = GetModel(entity);
                     if (model != null)
