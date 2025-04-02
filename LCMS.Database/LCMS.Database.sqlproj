@@ -91,6 +91,7 @@
     <Build Include="Views\CaseDocumentView.sql" />
     <Build Include="Views\CaseNoteView.sql" />
     <Build Include="Views\UserAccountView.sql" />
+    <Build Include="lcms-create-db.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\UserAccountAudit.sql" />
