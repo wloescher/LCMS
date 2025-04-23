@@ -1,8 +1,10 @@
-﻿using LCMS.Blazor.Components;
+﻿using LCMS.Blazor.Classes;
+using LCMS.Blazor.Components;
 using LCMS.Repository.Entities;
 using LCMS.Services;
 using LCMS.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
@@ -39,6 +41,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddScoped<CustomAuthService>();
 
 // Add Telerik
 builder.Services.AddTelerikBlazor();

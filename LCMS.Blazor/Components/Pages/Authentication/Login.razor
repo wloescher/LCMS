@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @using System.Security.Claims
+@using LCMS.Blazor.Classes
 @using Microsoft.AspNetCore.Components;
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
@@ -8,6 +9,7 @@
 @using LCMS.Blazor.ViewModels
 @inject NavigationManager NavigationManager
 @inject IServiceProvider ServiceProvider
+@inject CustomAuthService AuthService
 
 <EditForm Model="Model" OnValidSubmit="Authenticate" FormName="LoginForm">
     <div class="row justify-content-center">
@@ -37,18 +39,15 @@
 </EditForm>
 
 @code {
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
-
-    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/login") ? null : InteractiveServer;
-
     [SupplyParameterFromForm]
     public LoginViewModel Model { get; set; } = new();
 
     private string? errorMessage;
 
-    private async Task Authenticate()
+    private void Authenticate()
     {
+        var currentUser = AuthService.CurrentUser;
+
         var service = ServiceProvider.GetRequiredService<IUserService>();
         var user = service.GetUser(Model.UserName ?? string.Empty, Model.Password ?? string.Empty);
         if (user is null)
@@ -68,7 +67,8 @@
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
-        await HttpContext.SignInAsync(principal);
+        AuthService.CurrentUser = principal;
+
         NavigationManager.NavigateTo("/");
     }
 }
