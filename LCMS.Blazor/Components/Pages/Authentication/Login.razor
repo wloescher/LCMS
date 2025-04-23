@@ -38,7 +38,9 @@
 
 @code {
     [CascadingParameter]
-    public HttpContext? HttpContext { get; set; }
+    private HttpContext HttpContext { get; set; } = default!;
+
+    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/login") ? null : InteractiveServer;
 
     [SupplyParameterFromForm]
     public LoginViewModel Model { get; set; } = new();
