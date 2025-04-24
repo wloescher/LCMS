@@ -25,7 +25,7 @@ namespace LCMS.Services.Interfaces
         List<NoteModel> GetCaseNotes(int caseId);
         bool DeleteCaseNote(int caseNoteId, int userId);
 
-        bool CreateCaseUser(int cCaseId, int userId, int userId_Source);
+        bool CreateCaseUser(int caseId, int userId, int userId_Source);
         List<UserModel> GetCaseUsers(int caseId);
         bool DeleteCaseUser(int caseId, int userId, int userId_Source);
 

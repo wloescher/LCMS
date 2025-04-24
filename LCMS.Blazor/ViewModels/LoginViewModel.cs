@@ -11,5 +11,7 @@ namespace LCMS.Blazor.ViewModels
         [Required(AllowEmptyStrings = false, ErrorMessage = "Please provide Password.")]
         [MaxLength(100)]
         public string? Password { get; set; }
+
+        public bool RememberMe { get; set; }
     }
 }

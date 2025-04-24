@@ -60,4 +60,7 @@ public partial class Client
     [ForeignKey("ClientTypeId")]
     [InverseProperty("Clients")]
     public virtual DataDictionary ClientType { get; set; }
+
+    [InverseProperty("ContractClient")]
+    public virtual ICollection<Contract> Contracts { get; set; } = new List<Contract>();
 }

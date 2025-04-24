@@ -29,8 +29,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		READ.md = READ.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorServerDemo", "..\BlazorServerDemo\BlazorServerDemo.csproj", "{DFDE9793-6735-1647-7A8F-F212C30B92F1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,10 +61,6 @@ Global
 		{F9384EA1-2F3D-46CF-89E7-05D48400B0E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9384EA1-2F3D-46CF-89E7-05D48400B0E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9384EA1-2F3D-46CF-89E7-05D48400B0E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DFDE9793-6735-1647-7A8F-F212C30B92F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DFDE9793-6735-1647-7A8F-F212C30B92F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DFDE9793-6735-1647-7A8F-F212C30B92F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DFDE9793-6735-1647-7A8F-F212C30B92F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,7 +72,6 @@ Global
 		{F0202516-8459-4995-8FA4-603F0C914DBE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{C29A8B87-8799-4D59-99BD-14F58100C3BA} = {F2A2B655-317D-48F1-8B73-D57C97FFB51E}
 		{F9384EA1-2F3D-46CF-89E7-05D48400B0E4} = {F2A2B655-317D-48F1-8B73-D57C97FFB51E}
-		{DFDE9793-6735-1647-7A8F-F212C30B92F1} = {125C9250-DD9A-41BF-8075-620C44B9A99D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DBC289DB-8DEC-4463-B84E-0CDE0F4CCF27}

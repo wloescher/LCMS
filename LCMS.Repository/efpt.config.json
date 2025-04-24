@@ -63,6 +63,46 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Contract]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractAudit]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractComment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractCommentAudit]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractDocument]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractDocumentAudit]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractNote]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractNoteAudit]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractUser]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractUserAudit]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[DataDictionary]",
          "ObjectType": 0
       },
@@ -124,6 +164,30 @@
       },
       {
          "Name": "[dbo].[ClientView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ContractAuditView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ContractCommentView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ContractDocumentView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ContractNoteView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ContractUserView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ContractView]",
          "ObjectType": 3
       },
       {

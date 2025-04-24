@@ -41,6 +41,27 @@ namespace LCMS.Services.Interfaces
         bool UpdateClient(Client entityBefore, Client entityAfter, int userId);
         bool DeleteClient(Client entityBefore, Client entityAfter, int userId);
 
+        List<AuditModel> GetContractAudits(int contractId);
+        bool CreateContract(Contract entity, int userId);
+        bool UpdateContract(Contract entityBefore, Contract entityAfter, int userId);
+        bool DeleteContract(Contract entityBefore, Contract entityAfter, int userId);
+
+        List<AuditModel> GetContractCommentAudits(int contractCommentId);
+        bool CreateContractComment(ContractComment entity, int CommentId);
+        bool DeleteContractComment(ContractComment entity, int CommentId);
+
+        List<AuditModel> GetContractDocumentAudits(int contractDocumentId);
+        bool CreateContractDocument(ContractDocument entity, int DocumentId);
+        bool DeleteContractDocument(ContractDocument entity, int DocumentId);
+
+        List<AuditModel> GetContractNoteAudits(int contractNoteId);
+        bool CreateContractNote(ContractNote entity, int NoteId);
+        bool DeleteContractNote(ContractNote entity, int NoteId);
+
+        List<AuditModel> GetContractUserAudits(int contractUserId);
+        bool CreateContractUser(ContractUser entity, int userId);
+        bool DeleteContractUser(ContractUser entity, int userId);
+
         List<AuditModel> GetUserAudits(int userId);
         bool CreateUser(User entity, int userId);
         bool UpdateUser(User entityBefore, User entityAfter, int userId);

@@ -53,6 +53,38 @@ public partial class LCMSDatabaseContext : DbContext
 
     public virtual DbSet<ClientView> ClientViews { get; set; }
 
+    public virtual DbSet<Contract> Contracts { get; set; }
+
+    public virtual DbSet<ContractAudit> ContractAudits { get; set; }
+
+    public virtual DbSet<ContractAuditView> ContractAuditViews { get; set; }
+
+    public virtual DbSet<ContractComment> ContractComments { get; set; }
+
+    public virtual DbSet<ContractCommentAudit> ContractCommentAudits { get; set; }
+
+    public virtual DbSet<ContractCommentView> ContractCommentViews { get; set; }
+
+    public virtual DbSet<ContractDocument> ContractDocuments { get; set; }
+
+    public virtual DbSet<ContractDocumentAudit> ContractDocumentAudits { get; set; }
+
+    public virtual DbSet<ContractDocumentView> ContractDocumentViews { get; set; }
+
+    public virtual DbSet<ContractNote> ContractNotes { get; set; }
+
+    public virtual DbSet<ContractNoteAudit> ContractNoteAudits { get; set; }
+
+    public virtual DbSet<ContractNoteView> ContractNoteViews { get; set; }
+
+    public virtual DbSet<ContractUser> ContractUsers { get; set; }
+
+    public virtual DbSet<ContractUserAudit> ContractUserAudits { get; set; }
+
+    public virtual DbSet<ContractUserView> ContractUserViews { get; set; }
+
+    public virtual DbSet<ContractView> ContractViews { get; set; }
+
     public virtual DbSet<DataDictionary> DataDictionaries { get; set; }
 
     public virtual DbSet<DataDictionaryAudit> DataDictionaryAudits { get; set; }
@@ -285,6 +317,176 @@ public partial class LCMSDatabaseContext : DbContext
         modelBuilder.Entity<ClientView>(entity =>
         {
             entity.ToView("ClientView");
+        });
+
+        modelBuilder.Entity<Contract>(entity =>
+        {
+            entity.Property(e => e.ContractGuid).HasDefaultValueSql("NEWID()");
+
+            entity.HasOne(d => d.ContractClient).WithMany(p => p.Contracts)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contract_Client");
+
+            entity.HasOne(d => d.ContractStatus).WithMany(p => p.ContractContractStatuses)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contract_DataDictionary_Status");
+
+            entity.HasOne(d => d.ContractType).WithMany(p => p.ContractContractTypes)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contract_DataDictionary_Type");
+        });
+
+        modelBuilder.Entity<ContractAudit>(entity =>
+        {
+            entity.Property(e => e.ContractAuditDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.ContractAuditAction).WithMany(p => p.ContractAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractAudit_DataDictionary");
+
+            entity.HasOne(d => d.ContractAuditContract).WithMany(p => p.ContractAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractAudit_Contract");
+
+            entity.HasOne(d => d.ContractAuditUser).WithMany(p => p.ContractAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractAudit_User");
+        });
+
+        modelBuilder.Entity<ContractAuditView>(entity =>
+        {
+            entity.ToView("ContractAuditView");
+        });
+
+        modelBuilder.Entity<ContractComment>(entity =>
+        {
+            entity.Property(e => e.ContractCommentGuid).HasDefaultValueSql("NEWID()");
+
+            entity.HasOne(d => d.ContractCommentContract).WithMany(p => p.ContractComments)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractComment_Contract");
+        });
+
+        modelBuilder.Entity<ContractCommentAudit>(entity =>
+        {
+            entity.Property(e => e.ContractCommentAuditDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.ContractCommentAuditAction).WithMany(p => p.ContractCommentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractCommentAudit_DataDictionary");
+
+            entity.HasOne(d => d.ContractCommentAuditContractComment).WithMany(p => p.ContractCommentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractCommentAudit_ContractComment");
+
+            entity.HasOne(d => d.ContractCommentAuditUser).WithMany(p => p.ContractCommentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractCommentAudit_User");
+        });
+
+        modelBuilder.Entity<ContractCommentView>(entity =>
+        {
+            entity.ToView("ContractCommentView");
+        });
+
+        modelBuilder.Entity<ContractDocument>(entity =>
+        {
+            entity.Property(e => e.ContractDocumentGuid).HasDefaultValueSql("NEWID()");
+
+            entity.HasOne(d => d.ContractDocumentContract).WithMany(p => p.ContractDocuments)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractDocument_Contract");
+        });
+
+        modelBuilder.Entity<ContractDocumentAudit>(entity =>
+        {
+            entity.Property(e => e.ContractDocumentAuditDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.ContractDocumentAuditAction).WithMany(p => p.ContractDocumentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractDocumentAudit_DataDictionary");
+
+            entity.HasOne(d => d.ContractDocumentAuditContractDocument).WithMany(p => p.ContractDocumentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractDocumentAudit_ContractDocument");
+
+            entity.HasOne(d => d.ContractDocumentAuditUser).WithMany(p => p.ContractDocumentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractDocumentAudit_User");
+        });
+
+        modelBuilder.Entity<ContractDocumentView>(entity =>
+        {
+            entity.ToView("ContractDocumentView");
+        });
+
+        modelBuilder.Entity<ContractNote>(entity =>
+        {
+            entity.Property(e => e.ContractNoteGuid).HasDefaultValueSql("NEWID()");
+
+            entity.HasOne(d => d.ContractNoteContract).WithMany(p => p.ContractNotes)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractNote_Contract");
+        });
+
+        modelBuilder.Entity<ContractNoteAudit>(entity =>
+        {
+            entity.Property(e => e.ContractNoteAuditDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.ContractNoteAuditAction).WithMany(p => p.ContractNoteAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractNoteAudit_DataDictionary");
+
+            entity.HasOne(d => d.ContractNoteAuditContractNote).WithMany(p => p.ContractNoteAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractNoteAudit_ContractNote");
+
+            entity.HasOne(d => d.ContractNoteAuditUser).WithMany(p => p.ContractNoteAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractNoteAudit_User");
+        });
+
+        modelBuilder.Entity<ContractNoteView>(entity =>
+        {
+            entity.ToView("ContractNoteView");
+        });
+
+        modelBuilder.Entity<ContractUser>(entity =>
+        {
+            entity.HasOne(d => d.ContractUserContract).WithMany(p => p.ContractUsers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractUser_Contract");
+
+            entity.HasOne(d => d.ContractUserUser).WithMany(p => p.ContractUsers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractUser_User");
+        });
+
+        modelBuilder.Entity<ContractUserAudit>(entity =>
+        {
+            entity.Property(e => e.ContractUserAuditDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.ContractUserAuditAction).WithMany(p => p.ContractUserAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractUserAudit_DataDictionary");
+
+            entity.HasOne(d => d.ContractUserAuditContractUser).WithMany(p => p.ContractUserAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractUserAudit_ContractUser");
+
+            entity.HasOne(d => d.ContractUserAuditUser).WithMany(p => p.ContractUserAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ContractUserAudit_User");
+        });
+
+        modelBuilder.Entity<ContractUserView>(entity =>
+        {
+            entity.ToView("ContractUserView");
+        });
+
+        modelBuilder.Entity<ContractView>(entity =>
+        {
+            entity.ToView("ContractView");
         });
 
         modelBuilder.Entity<DataDictionary>(entity =>

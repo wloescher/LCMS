@@ -23,6 +23,12 @@ namespace LCMS.Models
 
             [Display(Name = "Document Type")]
             DocumentType = 6,
+
+            [Display(Name = "Contract Type")]
+            ContractType = 7,
+
+            [Display(Name = "Contract Status")]
+            ContractStatus = 8,
         }
 
         public enum AuditAction
@@ -75,6 +81,26 @@ namespace LCMS.Models
             PDF = 3,
             Spreadsheet = 4,
             Image = 5,
+        }
+
+        public enum ContractType
+        {
+            [Display(Name = "Fixed Price")]
+            FixedPrice = 1,
+            [Display(Name = "Cost Reimbursable")]
+            CostReimbursable = 2,
+            [Display(Name = "Time and Materials")]
+            TimeAndMaterials = 3,
+        }
+
+        public enum ContractStatus
+        {
+            Draft = 1,
+            Active = 2,
+            PendingRenewal = 3,
+            PendingCancelation = 4,
+            Expired = 5,
+            Closed = 6,
         }
     }
 }

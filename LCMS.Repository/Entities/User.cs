@@ -80,6 +80,24 @@ public partial class User
     [InverseProperty("ClientAuditUser")]
     public virtual ICollection<ClientAudit> ClientAudits { get; set; } = new List<ClientAudit>();
 
+    [InverseProperty("ContractAuditUser")]
+    public virtual ICollection<ContractAudit> ContractAudits { get; set; } = new List<ContractAudit>();
+
+    [InverseProperty("ContractCommentAuditUser")]
+    public virtual ICollection<ContractCommentAudit> ContractCommentAudits { get; set; } = new List<ContractCommentAudit>();
+
+    [InverseProperty("ContractDocumentAuditUser")]
+    public virtual ICollection<ContractDocumentAudit> ContractDocumentAudits { get; set; } = new List<ContractDocumentAudit>();
+
+    [InverseProperty("ContractNoteAuditUser")]
+    public virtual ICollection<ContractNoteAudit> ContractNoteAudits { get; set; } = new List<ContractNoteAudit>();
+
+    [InverseProperty("ContractUserAuditUser")]
+    public virtual ICollection<ContractUserAudit> ContractUserAudits { get; set; } = new List<ContractUserAudit>();
+
+    [InverseProperty("ContractUserUser")]
+    public virtual ICollection<ContractUser> ContractUsers { get; set; } = new List<ContractUser>();
+
     [InverseProperty("DataDictionaryAuditUser")]
     public virtual ICollection<DataDictionaryAudit> DataDictionaryAudits { get; set; } = new List<DataDictionaryAudit>();
 

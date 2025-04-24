@@ -33,6 +33,11 @@ namespace LCMS.Services
             SeedCaseDocumentData(dbContext);
             SeedCaseNoteData(dbContext);
             SeedCaseUserData(dbContext);
+            SeedContractData(dbContext);
+            SeedContractCommentData(dbContext);
+            SeedContractDocumentData(dbContext);
+            SeedContractNoteData(dbContext);
+            SeedContractUserData(dbContext);
 
             // Seed audit data
             using var scope = serviceProvider.CreateScope();
@@ -47,7 +52,11 @@ namespace LCMS.Services
             SeedCaseDocumentAuditData(dbContext, auditService);
             SeedCaseNoteAuditData(dbContext, auditService);
             SeedCaseUserAuditData(dbContext, auditService);
-
+            SeedContractAuditData(dbContext, auditService);
+            SeedContractCommentAuditData(dbContext, auditService);
+            SeedContractDocumentAuditData(dbContext, auditService);
+            SeedContractNoteAuditData(dbContext, auditService);
+            SeedContractUserAuditData(dbContext, auditService);
         }
 
         #endregion
@@ -116,7 +125,7 @@ namespace LCMS.Services
                 entities.Add(new DataDictionary
                 {
                     DataDictionaryIsActive = true,
-                    DataDictionaryGroupId = (int)Enums.DataDictionaryGroup.UserType,
+                    DataDictionaryGroupId = 1, // TODO: Set correct DataDictionaryGroupId
                     DataDictionaryKey = value.ToString(),
                     DataDictionaryValue = (int)value,
                 });
@@ -274,6 +283,10 @@ namespace LCMS.Services
             dbContext.Clients.AddRange(clients);
             dbContext.SaveChanges();
         }
+
+        #endregion
+
+        #region Case
 
         private static void SeedCaseData(LCMSDatabaseContext dbContext)
         {
@@ -485,7 +498,223 @@ namespace LCMS.Services
             dbContext.SaveChanges();
         }
 
-        #endregion 
+        #endregion
+
+        #region Contract
+
+        private static void SeedContractData(LCMSDatabaseContext dbContext)
+        {
+            if (dbContext.Contracts == null)
+            {
+                throw new NullReferenceException("Clients");
+            }
+
+            // Check for existing data
+            if (dbContext.Contracts.Any())
+            {
+                return;
+            }
+
+            var contracts = new List<Contract>();
+            foreach (Enums.ContractType contractType in Enum.GetValues(typeof(Enums.ContractType)))
+            {
+                foreach (Enums.ContractStatus contractStatus in Enum.GetValues(typeof(Enums.ContractStatus)))
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        contracts.Add(new Contract
+                        {
+                            ContractIsActive = true,
+                            ContractClientId = i,
+                            ContractTypeId = (int)contractType,
+                            ContractStatusId = (int)contractStatus,
+                            ContractTitle = string.Format("Test Contract - {0} - {1} - {2}", contractType, contractStatus, i.ToString("##")),
+                        });
+                    }
+                }
+            }
+
+            dbContext.Contracts.AddRange(contracts);
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedContractCommentData(LCMSDatabaseContext dbContext)
+        {
+            if (dbContext.ContractComments == null)
+            {
+                throw new NullReferenceException("ContractComments");
+            }
+
+            // Check for existing data
+            if (dbContext.ContractComments.Any())
+            {
+                return;
+            }
+
+            var comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+            var contractComments = new List<ContractComment>();
+            foreach (Enums.ContractType contractType in Enum.GetValues(typeof(Enums.ContractType)))
+            {
+                foreach (Enums.ContractStatus contractStatus in Enum.GetValues(typeof(Enums.ContractStatus)))
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        for (int j = 1; j <= 5; j++)
+                        {
+                            contractComments.Add(new ContractComment
+                            {
+                                ContractCommentContractId = i,
+                                ContractCommentBody = comment
+                            });
+                        }
+                    }
+                }
+            }
+
+            dbContext.ContractComments.AddRange(contractComments);
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedContractDocumentData(LCMSDatabaseContext dbContext)
+        {
+            if (dbContext.ContractDocuments == null)
+            {
+                throw new NullReferenceException("ContractDocuments");
+            }
+
+            // Check for existing data
+            if (dbContext.ContractDocuments.Any())
+            {
+                return;
+            }
+
+            var title = "Lorem ipsum dolor sit amet";
+            var contractDocuments = new List<ContractDocument>();
+            foreach (Enums.ContractType contractType in Enum.GetValues(typeof(Enums.ContractType)))
+            {
+                foreach (Enums.ContractStatus contractStatus in Enum.GetValues(typeof(Enums.ContractStatus)))
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        foreach (Enums.DocumentType documentType in Enum.GetValues(typeof(Enums.DocumentType)))
+                        {
+                            var extension = string.Empty;
+                            switch (documentType)
+                            {
+                                case DocumentType.Text:
+                                    extension = "txt";
+                                    break;
+                                case DocumentType.Word:
+                                    extension = "doc";
+                                    break;
+                                case DocumentType.PDF:
+                                    extension = "pdf";
+                                    break;
+                                case DocumentType.Spreadsheet:
+                                    extension = "xls";
+                                    break;
+                                case DocumentType.Image:
+                                    extension = "jpg";
+                                    break;
+                            }
+
+                            contractDocuments.Add(new ContractDocument
+                            {
+                                ContractDocumentContractId = i,
+                                ContractDocumentTypeId = (int)documentType,
+                                ContractDocumentTitle = string.Format("Test Document - {0} - {1}", documentType, i.ToString("##")),
+                                ContractDocumentSummary = title,
+                                ContractDocumentOriginalFileName = string.Format("Test-Document-{0}-{1}.{2}", documentType, i.ToString("##"), extension)
+                            });
+                        }
+                    }
+                }
+            }
+
+            dbContext.ContractDocuments.AddRange(contractDocuments);
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedContractNoteData(LCMSDatabaseContext dbContext)
+        {
+            if (dbContext.ContractNotes == null)
+            {
+                throw new NullReferenceException("ContractNotes");
+            }
+
+            // Check for existing data
+            if (dbContext.ContractNotes.Any())
+            {
+                return;
+            }
+
+            var note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+            var contractNotes = new List<ContractNote>();
+            foreach (Enums.ContractType contractType in Enum.GetValues(typeof(Enums.ContractType)))
+            {
+                foreach (Enums.ContractStatus contractStatus in Enum.GetValues(typeof(Enums.ContractStatus)))
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        for (int j = 1; j <= 5; j++)
+                        {
+                            contractNotes.Add(new ContractNote
+                            {
+                                ContractNoteContractId = i,
+                                ContractNoteBody = note
+                            });
+                        }
+                    }
+                }
+            }
+
+            dbContext.ContractNotes.AddRange(contractNotes);
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedContractUserData(LCMSDatabaseContext dbContext)
+        {
+            if (dbContext.ContractUsers == null)
+            {
+                throw new NullReferenceException("ContractUsers");
+            }
+
+            // Check for existing data
+            if (dbContext.ContractUsers.Any())
+            {
+                return;
+            }
+
+            var contractUsers = new List<ContractUser>();
+            foreach (Enums.ContractType contractType in Enum.GetValues(typeof(Enums.ContractType)))
+            {
+                foreach (Enums.ContractStatus contractStatus in Enum.GetValues(typeof(Enums.ContractStatus)))
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        for (int j = 1; j <= 5; j++)
+                        {
+                            // Check to make sure combo doesn't already exist (to prevent duplicate entries)
+                            if (!contractUsers.Any(x => x.ContractUserContractId == i && x.ContractUserUserId == j))
+                            {
+                                contractUsers.Add(new ContractUser
+                                {
+                                    ContractUserContractId = i,
+                                    ContractUserUserId = j
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            dbContext.ContractUsers.AddRange(contractUsers);
+            dbContext.SaveChanges();
+        }
+
+        #endregion
+
+        #endregion
 
         #region Seed Audit Data
 
@@ -589,6 +818,8 @@ namespace LCMS.Services
             }
         }
 
+        #region CaseAudit 
+
         private static void SeedCaseAuditData(LCMSDatabaseContext dbContext, IAuditService service)
         {
             if (dbContext.CaseAudits == null)
@@ -686,6 +917,110 @@ namespace LCMS.Services
             foreach (var entity in entities)
             {
                 service.CreateCaseUser(entity, 1);
+            }
+        }
+
+        #endregion
+
+        #region ContractAudit 
+
+        private static void SeedContractAuditData(LCMSDatabaseContext dbContext, IAuditService service)
+        {
+            if (dbContext.ContractAudits == null)
+            {
+                throw new NullReferenceException("ContractAudits");
+            }
+
+            // Check for existing data
+            if (dbContext.ContractAudits.Any())
+            {
+                return;
+            }
+
+            var entities = dbContext.Contracts.ToList();
+            foreach (var entity in entities)
+            {
+                service.CreateContract(entity, 1);
+            }
+        }
+
+        private static void SeedContractCommentAuditData(LCMSDatabaseContext dbContext, IAuditService service)
+        {
+            if (dbContext.ContractCommentAudits == null)
+            {
+                throw new NullReferenceException("ContractCommentAudits");
+            }
+
+            // Check for existing data
+            if (dbContext.ContractCommentAudits.Any())
+            {
+                return;
+            }
+
+            var entities = dbContext.ContractComments.ToList();
+            foreach (var entity in entities)
+            {
+                service.CreateContractComment(entity, 1);
+            }
+        }
+
+        private static void SeedContractDocumentAuditData(LCMSDatabaseContext dbContext, IAuditService service)
+        {
+            if (dbContext.ContractDocumentAudits == null)
+            {
+                throw new NullReferenceException("ContractDocumentAudits");
+            }
+
+            // Check for existing data
+            if (dbContext.ContractDocumentAudits.Any())
+            {
+                return;
+            }
+
+            var entities = dbContext.ContractDocuments.ToList();
+            foreach (var entity in entities)
+            {
+                service.CreateContractDocument(entity, 1);
+            }
+        }
+
+        private static void SeedContractNoteAuditData(LCMSDatabaseContext dbContext, IAuditService service)
+        {
+            if (dbContext.ContractNoteAudits == null)
+            {
+                throw new NullReferenceException("ContractNoteAudits");
+            }
+
+            // Check for existing data
+            if (dbContext.ContractNoteAudits.Any())
+            {
+                return;
+            }
+
+            var entities = dbContext.ContractNotes.ToList();
+            foreach (var entity in entities)
+            {
+                service.CreateContractNote(entity, 1);
+            }
+        }
+
+        private static void SeedContractUserAuditData(LCMSDatabaseContext dbContext, IAuditService service)
+        {
+            if (dbContext.ContractUserAudits == null)
+            {
+                throw new NullReferenceException("ContractUserAudits");
+            }
+
+            // Check for existing data
+            if (dbContext.ContractUserAudits.Any())
+            {
+                return;
+            }
+
+            var entities = dbContext.ContractUsers.ToList();
+            foreach (var entity in entities)
+            {
+                service.CreateContractUser(entity, 1);
             }
         }
 

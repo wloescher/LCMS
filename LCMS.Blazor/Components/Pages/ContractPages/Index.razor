@@ -1,0 +1,60 @@
+﻿@page "/contracts"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@attribute [Authorize]
+@inherits AuthenticatedPageBase
+
+<PageTitle>Index</PageTitle>
+
+<div class="row">
+    <div class="col-sm-6">
+        <h1>Contracts <span class="badge rounded-pill bg-secondary">@models.Count</span></h1>
+    </div>
+    <div class="col-sm-6 text-end">
+        <input type="search" @bind="titleFilter" @bind:event="oninput" placeholder="Filter by Title..." />
+        <a class="btn btn-sm btn-primary" href="contracts/create">Create New</a>
+    </div>
+</div>
+<hr />
+<div>
+    <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
+        <PropertyColumn Property="model => model.Title" Sortable="true" />
+        <PropertyColumn Property="model => model.ClientName" Sortable="true" />
+        <PropertyColumn Property="model => model.ContractType" Sortable="true" />
+        <PropertyColumn Property="model => model.Status" Sortable="true" />
+        <PropertyColumn Property="model => model.IsActive" Sortable="true" />
+        <TemplateColumn Context="model">
+            <div style="text-align: right;">
+                <a class="btn btn-outline-secondary" href="@($"contracts/details?id={model.Id}")">Details</a>
+                <a class="btn btn-primary" href="@($"contracts/edit?id={model.Id}")">Edit</a>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <a class="btn btn-danger" href="@($"contracts/delete?id={model.Id}")">Delete</a>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+<Paginator State="pagination" />
+
+@code {
+    private List<ContractModel> models = new();
+    private string titleFilter = string.Empty;
+    private IQueryable<ContractModel> FilteredModels => models.Where(x => x.Title.ToLower().Contains(titleFilter)).AsQueryable();
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<IContractService>();
+        models = service.GetContracts();
+
+        await base.OnInitializedAsync();
+    }
+}

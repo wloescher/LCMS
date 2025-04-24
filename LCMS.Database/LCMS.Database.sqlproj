@@ -91,6 +91,22 @@
     <Build Include="Views\CaseDocumentView.sql" />
     <Build Include="Views\CaseNoteView.sql" />
     <Build Include="Views\UserAccountView.sql" />
+    <Build Include="Tables\Contract.sql" />
+    <Build Include="Tables\ContractAudit.sql" />
+    <Build Include="Tables\ContractComment.sql" />
+    <Build Include="Tables\ContractCommentAudit.sql" />
+    <Build Include="Tables\ContractDocument.sql" />
+    <Build Include="Tables\ContractDocumentAudit.sql" />
+    <Build Include="Tables\ContractNote.sql" />
+    <Build Include="Tables\ContractNoteAudit.sql" />
+    <Build Include="Tables\ContractUser.sql" />
+    <Build Include="Tables\ContractUserAudit.sql" />
+    <Build Include="Views\ContractAuditView.sql" />
+    <Build Include="Views\ContractCommentView.sql" />
+    <Build Include="Views\ContractDocumentView.sql" />
+    <Build Include="Views\ContractNoteView.sql" />
+    <Build Include="Views\ContractUserView.sql" />
+    <Build Include="Views\ContractView.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\UserAccountAudit.sql" />

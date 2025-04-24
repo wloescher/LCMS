@@ -25,7 +25,7 @@
             </div>
             <div class="mb-3">
                 <label>Password</label>
-                <InputText @bind-Value="Model.Password" class="form-control" placeholder="Password" />
+                <InputText type="password" @bind-Value="Model.Password" class="form-control" placeholder="Password" />
                 <ValidationMessage For="() => Model.Password" />
             </div>
             <div class="mb-3 text-center">
@@ -40,7 +40,7 @@
 
 @code {
     [SupplyParameterFromForm]
-    public LoginViewModel Model { get; set; } = new();
+    public LoginViewModel Model { get; set; } = new() { UserName = "admin", Password = "admin" };
 
     private string? errorMessage;
 

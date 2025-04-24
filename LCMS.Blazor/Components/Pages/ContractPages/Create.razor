@@ -1,0 +1,177 @@
+﻿@page "/contracts/create"
+@using Microsoft.AspNetCore.Authorization
+@using LCMS.Models
+@using static LCMS.Models.Enums
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@attribute [Authorize]
+@inherits AuthenticatedPageBase
+
+<PageTitle>Create</PageTitle>
+
+<div class="row">
+	<div class="col-6">
+		<h1>Create Contract</h1>
+	</div>
+	<div class="col-6 text-end">
+		<a class="btn btn-outline-secondary" href="/contracts">Cancel</a>
+		<button type="submit" class="btn btn-primary">Save</button>
+	</div>
+</div>
+<hr />
+<div class="row">
+	<div class="col-md-8">
+		<EditForm method="post" Model="Model" OnValidSubmit="CreateContract" FormName="create" Enhance>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="mb-3">
+						<label for="clientId" class="form-label">Document Type: </label>
+						<TelerikRadioGroup Data="@DocumentTypes" @bind-Value="@Model.DocumentTypeId" OnChange="@OnDocumentTypeChanged" Layout="RadioGroupLayout.Horizontal" />
+					</div>
+					<div class="mb-3">
+						<label for="title" class="form-label">Title</label>
+						<InputText id="title" @bind-Value="Model.Title" class="form-control" />
+						<ValidationMessage For="() => Model.Title" class="text-danger" />
+					</div>
+					<div class="mb-3">
+						<label for="summary" class="form-label">Summary</label>
+						<InputTextArea id="summary" @bind-Value="Model.Summary" class="form-control" rows="8"></InputTextArea>
+						<ValidationMessage For="() => Model.Summary" class="text-danger" />
+					</div>
+					<div class="row">
+						<div class="col-sm-3">
+							<div class="mb-3">
+								<InputCheckbox id="isActive" @bind-Value="Model.IsActive" class="form-check-input" />
+								<label for="isActive" class="form-label">Active</label>
+								<ValidationMessage For="() => Model.IsActive" class="text-danger" />
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="mb-3">
+								<InputCheckbox id="isDeleted" @bind-Value="Model.IsDeleted" class="form-check-input" />
+								<label for="isDeleted" class="form-label">Deleted</label>
+								<ValidationMessage For="() => Model.IsDeleted" class="text-danger" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<DataAnnotationsValidator />
+					<ValidationSummary class="text-danger" role="alert" />
+					<div class="mb-3">
+						<label for="clientId" class="form-label">Client</label>
+						<InputSelect id="clientId" @bind-Value="Model.ClientId" class="form-select">
+							<option value="">
+								Select...
+							</option>
+							@foreach (var client in Clients)
+							{
+								<option checked="@(Model.ClientId == client.Key)" value="@client.Key">
+									@client.Value
+								</option>
+							}
+						</InputSelect>
+						<ValidationMessage For="() => Model.ClientId" class="text-danger" />
+					</div>
+					<div class="mb-3">
+						<label for="typeId" class="form-label">Contract Type</label>
+						<InputSelect id="typeId" @bind-Value="Model.ContractTypeId" class="form-select">
+							<option value="">
+								Select...
+							</option>
+							@foreach (Enums.ContractType value in Enum.GetValues(typeof(Enums.ContractType)))
+							{
+								<option checked="@(Model.ContractTypeId == (int)value)" value="@((int)value)">
+									@value.ToString()
+								</option>
+							}
+						</InputSelect>
+						<ValidationMessage For="() => Model.ContractTypeId" class="text-danger" />
+					</div>
+					<div class="mb-3">
+						<label for="statusId" class="form-label">Status</label>
+						<InputSelect id="statusId" @bind-Value="Model.StatusId" class="form-select">
+							<option value="">
+								Select...
+							</option>
+							@foreach (Enums.ContractStatus value in Enum.GetValues(typeof(Enums.ContractStatus)))
+							{
+								<option checked="@(Model.ContractTypeId == (int)value)" value="@((int)value)">
+									@value.ToString()
+								</option>
+							}
+						</InputSelect>
+						<ValidationMessage For="() => Model.StatusId" class="text-danger" />
+					</div>
+				</div>
+			</div>
+		</EditForm>
+	</div>
+	<div class="col-md-4">
+		@if (Model.DocumentTypeId == (int)DocumentType.PDF)
+		{
+			<TelerikPdfViewer Height="600px" />
+		}
+		@if (Model.DocumentTypeId == (int)DocumentType.Spreadsheet)
+		{
+			<TelerikSpreadsheet Height="600px" />
+		}
+	</div>
+</div>
+
+@code {
+	[SupplyParameterFromForm]
+	private ContractModel Model { get; set; } = new();
+	private string FileType { get; set; } = "PDF";
+	private byte[] PdfSource { get; set; }
+	private const string PdfBase64 = "JVBERi0xLjEKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqCjIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDEvTWVkaWFCb3ggWy00MCAtNjQgMjYwIDgwXSA+PmVuZG9iagozIDAgb2JqPDwvVHlwZS9QYWdlL1BhcmVudCAyIDAgUi9SZXNvdXJjZXM8PC9Gb250PDwvRjE8PC9UeXBlL0ZvbnQvU3VidHlwZS9UeXBlMS9CYXNlRm9udC9BcmlhbD4+ID4+ID4+L0NvbnRlbnRzIDQgMCBSPj5lbmRvYmoKNCAwIG9iajw8L0xlbmd0aCA1OT4+CnN0cmVhbQpCVAovRjEgMTggVGYKMCAwIFRkCihUZWxlcmlrIFBkZlZpZXdlciBmb3IgQmxhem9yKSBUagpFVAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA1CjAwMDAwMDAwMDAgNjU1MzUgZgowMDAwMDAwMDIxIDAwMDAwIG4KMDAwMDAwMDA4NiAwMDAwMCBuCjAwMDAwMDAxOTUgMDAwMDAgbgowMDAwMDAwNDkwIDAwMDAwIG4KdHJhaWxlciA8PCAgL1Jvb3QgMSAwIFIgL1NpemUgNSA+PgpzdGFydHhyZWYKNjA5CiUlRU9G";
+
+	public List<DocumentType> DocumentTypes
+	{
+		get
+		{
+			var documentTypesAsArray = (DocumentType[])Enum.GetValues(typeof(DocumentType));
+			List<DocumentType> documentTypes = new List<DocumentType>(documentTypesAsArray);
+			return documentTypes;
+		}
+	}
+
+	private List<KeyValuePair<int, string>> Clients = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		var clientService = ServiceProvider.GetRequiredService<IClientService>();
+		Clients = clientService.GetClientKeyValuePairs(true, false);
+
+		await base.OnInitializedAsync();
+	}
+
+	public async Task OnDocumentTypeChanged(object newValue)
+	{
+		// TODO: Display preview control based on selected file type
+		var documentType = (DocumentType)newValue;
+		Console.WriteLine(documentType);
+	}
+
+	private async Task OnPdfDownload(PdfViewerDownloadEventArgs args)
+	{
+		args.FileName = "PDF-Viewer-Download";
+	}
+
+	protected override void OnInitialized()
+	{
+		Model.DocumentTypeId = (int)DocumentType.PDF;
+		PdfSource = Convert.FromBase64String(PdfBase64);
+		base.OnInitialized();
+	}
+
+	// To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+	private void CreateContract()
+	{
+		var service = ServiceProvider.GetRequiredService<IContractService>();
+		service.CreateContract(Model, _currentUserId);
+		NavigationManager.NavigateTo("/contracts");
+	}
+}

@@ -52,6 +52,7 @@ builder.Services.AddTransient<IJwtTokenService, JwtTokenService>();
 builder.Services.AddTransient<IAuditService, AuditService>();
 builder.Services.AddTransient<ICaseService, CaseService>();
 builder.Services.AddTransient<IClientService, ClientService>();
+builder.Services.AddTransient<IContractService, ContractService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IUserAccountService, UserAccountService>();
 

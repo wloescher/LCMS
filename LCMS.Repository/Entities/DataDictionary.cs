@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LCMS.Repository.Entities;
 
 [Table("DataDictionary")]
-[Index("DataDictionaryKey", Name = "UQ_DataDictionaryKey", IsUnique = true)]
+[Index("DataDictionaryGroupId", "DataDictionaryKey", Name = "UQ_DataDictionaryKey", IsUnique = true)]
 public partial class DataDictionary
 {
     [Key]
@@ -56,6 +56,27 @@ public partial class DataDictionary
 
     [InverseProperty("ClientType")]
     public virtual ICollection<Client> Clients { get; set; } = new List<Client>();
+
+    [InverseProperty("ContractAuditAction")]
+    public virtual ICollection<ContractAudit> ContractAudits { get; set; } = new List<ContractAudit>();
+
+    [InverseProperty("ContractCommentAuditAction")]
+    public virtual ICollection<ContractCommentAudit> ContractCommentAudits { get; set; } = new List<ContractCommentAudit>();
+
+    [InverseProperty("ContractStatus")]
+    public virtual ICollection<Contract> ContractContractStatuses { get; set; } = new List<Contract>();
+
+    [InverseProperty("ContractType")]
+    public virtual ICollection<Contract> ContractContractTypes { get; set; } = new List<Contract>();
+
+    [InverseProperty("ContractDocumentAuditAction")]
+    public virtual ICollection<ContractDocumentAudit> ContractDocumentAudits { get; set; } = new List<ContractDocumentAudit>();
+
+    [InverseProperty("ContractNoteAuditAction")]
+    public virtual ICollection<ContractNoteAudit> ContractNoteAudits { get; set; } = new List<ContractNoteAudit>();
+
+    [InverseProperty("ContractUserAuditAction")]
+    public virtual ICollection<ContractUserAudit> ContractUserAudits { get; set; } = new List<ContractUserAudit>();
 
     [InverseProperty("DataDictionaryAuditAction")]
     public virtual ICollection<DataDictionaryAudit> DataDictionaryAuditDataDictionaryAuditActions { get; set; } = new List<DataDictionaryAudit>();
