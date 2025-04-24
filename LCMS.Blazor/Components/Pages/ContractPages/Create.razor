@@ -1,4 +1,5 @@
 ﻿@page "/contracts/create"
+@using DocumentFormat.OpenXml.Spreadsheet
 @using Microsoft.AspNetCore.Authorization
 @using LCMS.Models
 @using static LCMS.Models.Enums
@@ -9,6 +10,8 @@
 @inject IServiceProvider ServiceProvider
 @attribute [Authorize]
 @inherits AuthenticatedPageBase
+@using System.IO
+@using Telerik.Documents.SpreadsheetStreaming
 
 <PageTitle>Create</PageTitle>
 
@@ -31,13 +34,14 @@
 <div class="row">
 	<div class="col-md-6">
 		<TelerikDropZone Id="dropzone" NoteText="Allowed file types: Word, Excel, PDF" />
-		<TelerikUpload DropZoneId="dropzone" SaveUrl="@UploadSaveUrl" RemoveUrl="@UploadRemoveUrl" MaxFileSize="@( 16 * 1024 * 1024 )" OnSelect="OnUploadSelected" OnUpload="@OnUploadUpload" OnSuccess="@OnUploadSuccess" />
+		<TelerikFileSelect DropZoneId="dropzone" AllowedExtensions="@AllowedExtensions" Multiple="false" OnSelect="@OnFileSelectAsync" />
+		@*<TelerikUpload DropZoneId="dropzone" SaveUrl="@UploadSaveUrl" RemoveUrl="@UploadRemoveUrl" MaxFileSize="@( 16 * 1024 * 1024 )" OnSelect="OnUploadSelected" OnUpload="@OnUploadUpload" OnSuccess="@OnUploadSuccess" />*@
 		<div class="my-3">
 			<TelerikRadioGroup Data="@DocumentTypes" @bind-Value="@Model.DocumentTypeId" OnChange="@OnDocumentTypeChanged" Layout="RadioGroupLayout.Horizontal" />
 		</div>
 		@if (Model.DocumentTypeId == (int)DocumentType.Word || Model.DocumentTypeId == (int)DocumentType.Text)
 		{
-			<TelerikEditor Height="600px" Tools="@EditorTools" ReadOnly>
+			<TelerikEditor Height="600px" Tools="@EditorTools" ReadOnly Value="@DocumentData.ToString()">
 				<EditorCustomTools>
 					<EditorCustomTool Name="SearchText">
 						<div class="input-group">
@@ -50,16 +54,16 @@
 		}
 		@if (Model.DocumentTypeId == (int)DocumentType.Excel)
 		{
-			<TelerikSpreadsheet Height="600px" Tools="@SpreadsheetTools" />
+			<TelerikSpreadsheet Height="600px" Tools="@SpreadsheetTools" Data="@DocumentData" />
 		}
 		@if (Model.DocumentTypeId == (int)DocumentType.PDF)
 		{
-			<TelerikPdfViewer Height="600px" />
+			<TelerikPdfViewer Height="600px" Data="@DocumentData" />
 		}
 		@if (Model.DocumentTypeId == (int)DocumentType.Image)
 		{
 			<div style="width: 100%; min-height: 100px; border: solid 1px lightgrey;">
-				<img src="" style="width: 100%;" />
+				<img src="@ImageSrc" style="width: 100%;" />
 			</div>
 		}
 	</div>
@@ -157,6 +161,9 @@
 	private string UploadRemoveUrl => ToAbsoluteUrl("api/upload/remove");
 	private string ToAbsoluteUrl(string url) { return $"{NavigationManager.BaseUri}{url}"; }
 
+	private byte[] DocumentData { get; set; } = [];
+	private string ImageSrc { get; set; } = string.Empty;
+
 	private List<IEditorTool> EditorTools { get; set; } = new List<IEditorTool>();
 	private string EditorSearchText { get; set; } = string.Empty;
 
@@ -193,6 +200,51 @@
 		await base.OnInitializedAsync();
 	}
 
+	private async Task OnFileSelectAsync(FileSelectEventArgs args)
+	{
+		var selectedFile = args.Files[0];
+		Model.FileName = selectedFile.Name;
+
+		// Set document type from file extension
+		switch (selectedFile.Extension)
+		{
+			case ".docx":
+			case ".doc":
+				Model.DocumentTypeId = (int)DocumentType.Word;
+				break;
+			case ".xlsx":
+			case ".xls":
+				Model.DocumentTypeId = (int)DocumentType.Excel;
+				break;
+			case ".pdf":
+				Model.DocumentTypeId = (int)DocumentType.PDF;
+				break;
+			case ".txt":
+				Model.DocumentTypeId = (int)DocumentType.Text;
+				break;
+			case ".jpeg":
+			case ".jpg":
+			case ".png":
+				Model.DocumentTypeId = (int)DocumentType.Image;
+				break;
+			default:
+				throw new ArgumentOutOfRangeException(string.Format("File Extension '{0}' not supported.", selectedFile.Extension));
+		}
+
+		// Check for image
+		if (Model.DocumentType == DocumentType.Image)
+		{
+			ImageSrc = string.Format("/uploads/{0}", selectedFile.Name);
+		}
+
+		// Read file data
+		var selectedFileInfo = new FileInfo(selectedFile.Name);
+		DocumentData = new byte[selectedFile.Stream.Length];
+		await selectedFile.Stream.ReadAsync(DocumentData);
+
+		Console.WriteLine("here we are");
+	}
+
 	private void OnUploadSelected(UploadSelectEventArgs args)
 	{
 		var uploadedFile = args.Files[0];
@@ -200,7 +252,7 @@
 		Model.DocumentTypeId = 0;
 	}
 
-	private async Task OnUploadUpload(UploadEventArgs args)
+	private void OnUploadUpload(UploadEventArgs args)
 	{
 		if (!args.Files.Any())
 		{
