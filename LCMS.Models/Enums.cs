@@ -77,9 +77,9 @@ namespace LCMS.Models
         public enum DocumentType
         {
             Text = 1,
-            Word = 2,
-            PDF = 3,
-            Spreadsheet = 4,
+            PDF = 2,
+            Word = 3,
+            Excel = 4,
             Image = 5,
         }
 

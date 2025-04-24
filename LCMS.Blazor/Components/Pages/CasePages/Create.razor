@@ -20,7 +20,7 @@
             <ValidationSummary class="text-danger" role="alert" />
             <div class="mb-3">
                 <label for="clientId" class="form-label">Client</label>
-                <InputSelect id="clientId" @bind-Value="Model.ClientId" class="form-control">
+                <InputSelect id="clientId" @bind-Value="Model.ClientId" class="form-select">
                     <option value="">
                         Select...
                     </option>
@@ -35,7 +35,7 @@
             </div>
             <div class="mb-3">
                 <label for="typeId" class="form-label">Type</label>
-                <InputSelect id="typeId" @bind-Value="Model.TypeId" class="form-control">
+                <InputSelect id="typeId" @bind-Value="Model.TypeId" class="form-select">
                     <option value="">
                         Select...
                     </option>
@@ -50,7 +50,7 @@
             </div>
             <div class="mb-3">
                 <label for="statusId" class="form-label">Status</label>
-                <InputSelect id="statusId" @bind-Value="Model.StatusId" class="form-control">
+                <InputSelect id="statusId" @bind-Value="Model.StatusId" class="form-select">
                     <option value="">
                         Select...
                     </option>

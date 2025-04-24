@@ -4,12 +4,19 @@
 @using static LCMS.Models.Enums
 @using LCMS.Services.Interfaces
 @using LCMS.Blazor.Components.Pages.BaseClasses
+@using Telerik.Blazor.Components.Spreadsheet
 @inject NavigationManager NavigationManager
 @inject IServiceProvider ServiceProvider
 @attribute [Authorize]
 @inherits AuthenticatedPageBase
 
 <PageTitle>Create</PageTitle>
+
+<style>
+	.k-toolbar {
+		display: none;
+	}
+</style>
 
 <div class="row">
 	<div class="col-6">
@@ -22,14 +29,44 @@
 </div>
 <hr />
 <div class="row">
-	<div class="col-md-8">
+	<div class="col-md-6">
+		<TelerikDropZone Id="dropzone" NoteText="Allowed file types: Word, Excel, PDF" />
+		<TelerikUpload DropZoneId="dropzone" SaveUrl="@UploadSaveUrl" RemoveUrl="@UploadRemoveUrl" MaxFileSize="@( 16 * 1024 * 1024 )" OnSelect="OnUploadSelected" OnUpload="@OnUploadUpload" OnSuccess="@OnUploadSuccess" />
+		<div class="my-3">
+			<TelerikRadioGroup Data="@DocumentTypes" @bind-Value="@Model.DocumentTypeId" OnChange="@OnDocumentTypeChanged" Layout="RadioGroupLayout.Horizontal" />
+		</div>
+		@if (Model.DocumentTypeId == (int)DocumentType.Word || Model.DocumentTypeId == (int)DocumentType.Text)
+		{
+			<TelerikEditor Height="600px" Tools="@EditorTools" ReadOnly>
+				<EditorCustomTools>
+					<EditorCustomTool Name="SearchText">
+						<div class="input-group">
+							<input type="text" @bind="EditorSearchText" class="form-control" placeholder="Search document for text..." aria-label="Search Text" aria-describedby="btnSearchText">
+							<button class="btn btn-outline-success" type="button" id="btnSearchText" onclick="@EditorSearch">Button</button>
+						</div>
+					</EditorCustomTool>
+				</EditorCustomTools>
+			</TelerikEditor>
+		}
+		@if (Model.DocumentTypeId == (int)DocumentType.Excel)
+		{
+			<TelerikSpreadsheet Height="600px" Tools="@SpreadsheetTools" />
+		}
+		@if (Model.DocumentTypeId == (int)DocumentType.PDF)
+		{
+			<TelerikPdfViewer Height="600px" />
+		}
+		@if (Model.DocumentTypeId == (int)DocumentType.Image)
+		{
+			<div style="width: 100%; min-height: 100px; border: solid 1px lightgrey;">
+				<img src="" style="width: 100%;" />
+			</div>
+		}
+	</div>
+	<div class="col-md-6">
 		<EditForm method="post" Model="Model" OnValidSubmit="CreateContract" FormName="create" Enhance>
 			<div class="row">
 				<div class="col-md-6">
-					<div class="mb-3">
-						<label for="clientId" class="form-label">Document Type: </label>
-						<TelerikRadioGroup Data="@DocumentTypes" @bind-Value="@Model.DocumentTypeId" OnChange="@OnDocumentTypeChanged" Layout="RadioGroupLayout.Horizontal" />
-					</div>
 					<div class="mb-3">
 						<label for="title" class="form-label">Title</label>
 						<InputText id="title" @bind-Value="Model.Title" class="form-control" />
@@ -109,26 +146,25 @@
 			</div>
 		</EditForm>
 	</div>
-	<div class="col-md-4">
-		@if (Model.DocumentTypeId == (int)DocumentType.PDF)
-		{
-			<TelerikPdfViewer Height="600px" />
-		}
-		@if (Model.DocumentTypeId == (int)DocumentType.Spreadsheet)
-		{
-			<TelerikSpreadsheet Height="600px" />
-		}
-	</div>
 </div>
 
 @code {
 	[SupplyParameterFromForm]
 	private ContractModel Model { get; set; } = new();
-	private string FileType { get; set; } = "PDF";
-	private byte[] PdfSource { get; set; }
-	private const string PdfBase64 = "JVBERi0xLjEKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqCjIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDEvTWVkaWFCb3ggWy00MCAtNjQgMjYwIDgwXSA+PmVuZG9iagozIDAgb2JqPDwvVHlwZS9QYWdlL1BhcmVudCAyIDAgUi9SZXNvdXJjZXM8PC9Gb250PDwvRjE8PC9UeXBlL0ZvbnQvU3VidHlwZS9UeXBlMS9CYXNlRm9udC9BcmlhbD4+ID4+ID4+L0NvbnRlbnRzIDQgMCBSPj5lbmRvYmoKNCAwIG9iajw8L0xlbmd0aCA1OT4+CnN0cmVhbQpCVAovRjEgMTggVGYKMCAwIFRkCihUZWxlcmlrIFBkZlZpZXdlciBmb3IgQmxhem9yKSBUagpFVAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA1CjAwMDAwMDAwMDAgNjU1MzUgZgowMDAwMDAwMDIxIDAwMDAwIG4KMDAwMDAwMDA4NiAwMDAwMCBuCjAwMDAwMDAxOTUgMDAwMDAgbgowMDAwMDAwNDkwIDAwMDAwIG4KdHJhaWxlciA8PCAgL1Jvb3QgMSAwIFIgL1NpemUgNSA+PgpzdGFydHhyZWYKNjA5CiUlRU9G";
 
-	public List<DocumentType> DocumentTypes
+	private List<string> AllowedExtensions { get; set; } = new List<string>() { ".docx", ".doc", ".xlsx", ".xls", ".pdf" };
+	private string UploadSaveUrl => ToAbsoluteUrl("api/upload/save");
+	private string UploadRemoveUrl => ToAbsoluteUrl("api/upload/remove");
+	private string ToAbsoluteUrl(string url) { return $"{NavigationManager.BaseUri}{url}"; }
+
+	private List<IEditorTool> EditorTools { get; set; } = new List<IEditorTool>();
+	private string EditorSearchText { get; set; } = string.Empty;
+
+	private SpreadsheetToolSet SpreadsheetTools { get; set; } = new SpreadsheetToolSet();
+
+	private List<KeyValuePair<int, string>> Clients = new();
+
+	private List<DocumentType> DocumentTypes
 	{
 		get
 		{
@@ -138,33 +174,74 @@
 		}
 	}
 
-	private List<KeyValuePair<int, string>> Clients = new();
-
 	protected override async Task OnInitializedAsync()
 	{
 		var clientService = ServiceProvider.GetRequiredService<IClientService>();
 		Clients = clientService.GetClientKeyValuePairs(true, false);
 
+		SpreadsheetTools.Items = new List<SpreadsheetToolSetItem>()
+		{
+			new SpreadsheetToolSetItem()
+			{
+				Tools = new List<SpreadsheetTool>()
+				{
+					new SpreadsheetOpenFileTool(),
+				}
+			}
+		};
+
 		await base.OnInitializedAsync();
 	}
 
-	public async Task OnDocumentTypeChanged(object newValue)
+	private void OnUploadSelected(UploadSelectEventArgs args)
+	{
+		var uploadedFile = args.Files[0];
+		Model.FileName = uploadedFile.Name;
+		Model.DocumentTypeId = 0;
+	}
+
+	private async Task OnUploadUpload(UploadEventArgs args)
+	{
+		if (!args.Files.Any())
+		{
+			return;
+		}
+	}
+
+	private void OnUploadSuccess(UploadSuccessEventArgs args)
+	{
+		var fileExtension = args.Files[0].Extension;
+		switch (fileExtension)
+		{
+			case ".docx":
+			case ".doc":
+				Model.DocumentTypeId = (int)DocumentType.Word;
+				break;
+			case ".xlsx":
+			case ".xls":
+				Model.DocumentTypeId = (int)DocumentType.Excel;
+				break;
+			case ".pdf":
+				Model.DocumentTypeId = (int)DocumentType.PDF;
+				break;
+			case ".txt":
+				Model.DocumentTypeId = (int)DocumentType.Text;
+				break;
+			default:
+				throw new ArgumentOutOfRangeException(string.Format("File Extension '{0}' not supported.", fileExtension));
+		}
+	}
+
+	private void EditorSearch()
+	{
+		Console.Write(string.Format("TODO: Search Word Document for '{0}'", EditorSearchText));
+	}
+
+	private void OnDocumentTypeChanged(object newValue)
 	{
 		// TODO: Display preview control based on selected file type
 		var documentType = (DocumentType)newValue;
 		Console.WriteLine(documentType);
-	}
-
-	private async Task OnPdfDownload(PdfViewerDownloadEventArgs args)
-	{
-		args.FileName = "PDF-Viewer-Download";
-	}
-
-	protected override void OnInitialized()
-	{
-		Model.DocumentTypeId = (int)DocumentType.PDF;
-		PdfSource = Convert.FromBase64String(PdfBase64);
-		base.OnInitialized();
 	}
 
 	// To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.

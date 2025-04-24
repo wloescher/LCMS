@@ -16,12 +16,17 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="Telerik.Documents.Core.Trial" Version="2025.1.205" />
     <PackageReference Include="Telerik.UI.for.Blazor.Trial" Version="8.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LCMS.Database\LCMS.Database.sqlproj" />
     <ProjectReference Include="..\LCMS.Services\LCMS.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
 </Project>

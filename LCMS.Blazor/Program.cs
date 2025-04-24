@@ -1,4 +1,5 @@
-﻿using LCMS.Blazor.Classes;
+﻿using System.Text.Json.Serialization;
+using LCMS.Blazor.Classes;
 using LCMS.Blazor.Components;
 using LCMS.Repository.Entities;
 using LCMS.Services;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +43,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddScoped<CustomAuthService>();
+builder.Services.AddControllers();
 
 // Add Telerik
 builder.Services.AddTelerikBlazor();
@@ -83,5 +84,7 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapDefaultControllerRoute();
 
 app.Run();

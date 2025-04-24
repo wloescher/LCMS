@@ -106,18 +106,20 @@ namespace LCMS.Services
             }
 
             var dataDictionaries = new List<DataDictionary>();
-            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.AuditAction)));
-            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.UserType)));
-            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.ClientType)));
-            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.CaseType)));
-            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.CaseStatus)));
-            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.DocumentType)));
+            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.AuditAction), Enums.DataDictionaryGroup.AuditAction));
+            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.UserType), Enums.DataDictionaryGroup.UserType));
+            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.ClientType), Enums.DataDictionaryGroup.ClientType));
+            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.CaseType), Enums.DataDictionaryGroup.CaseType));
+            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.CaseStatus), Enums.DataDictionaryGroup.CaseStatus));
+            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.ContractType), Enums.DataDictionaryGroup.ContractType));
+            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.ContractStatus), Enums.DataDictionaryGroup.ContractStatus));
+            dataDictionaries.AddRange(GetDataDictionaries(typeof(Enums.DocumentType), Enums.DataDictionaryGroup.DocumentType));
 
             dbContext.DataDictionaries.AddRange(dataDictionaries);
             dbContext.SaveChanges();
         }
 
-        private static List<DataDictionary> GetDataDictionaries(Type type)
+        private static List<DataDictionary> GetDataDictionaries(Type type, Enums.DataDictionaryGroup dataDictionaryGroup)
         {
             var entities = new List<DataDictionary>();
             foreach (var value in Enum.GetValues(type))
@@ -125,7 +127,7 @@ namespace LCMS.Services
                 entities.Add(new DataDictionary
                 {
                     DataDictionaryIsActive = true,
-                    DataDictionaryGroupId = 1, // TODO: Set correct DataDictionaryGroupId
+                    DataDictionaryGroupId = (int)dataDictionaryGroup,
                     DataDictionaryKey = value.ToString(),
                     DataDictionaryValue = (int)value,
                 });
@@ -396,7 +398,7 @@ namespace LCMS.Services
                                 case DocumentType.PDF:
                                     extension = "pdf";
                                     break;
-                                case DocumentType.Spreadsheet:
+                                case DocumentType.Excel:
                                     extension = "xls";
                                     break;
                                 case DocumentType.Image:
@@ -610,7 +612,7 @@ namespace LCMS.Services
                                 case DocumentType.PDF:
                                     extension = "pdf";
                                     break;
-                                case DocumentType.Spreadsheet:
+                                case DocumentType.Excel:
                                     extension = "xls";
                                     break;
                                 case DocumentType.Image:
