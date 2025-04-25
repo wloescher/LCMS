@@ -14,12 +14,25 @@
 
 <div class="row">
     <div class="col-sm-6">
-        <h1>Contracts <span class="badge rounded-pill bg-secondary">@models.Count</span></h1>
+        <h1>
+            <i class="fa-regular fa-file-contract"></i>
+            Contracts
+            <span class="badge rounded-pill bg-secondary">@models.Count</span>
+        </h1>
     </div>
-    <div class="col-sm-6 text-end">
-        <input type="search" @bind="titleFilter" @bind:event="oninput" placeholder="Filter by Title..." />
-        <a class="btn btn-sm btn-primary" href="contracts/create">Create New</a>
-    </div>
+    	<div class="col-sm-6">
+		<div class="row">
+			<div class="col-10 text-end px-0">
+                <input type="search" class="form-control" @bind="titleFilter" @bind:event="oninput" placeholder="Filter by Title..." />
+			</div>
+			<div class="col-2 text-end">
+				<a class="btn btn-primary" href="contracts/create">
+                    <i class="fa-regular fa-plus"></i>
+                    Create New
+                </a>
+			</div>
+		</div>
+	</div>
 </div>
 <hr />
 <div>
@@ -31,11 +44,17 @@
         <PropertyColumn Property="model => model.IsActive" Sortable="true" />
         <TemplateColumn Context="model">
             <div style="text-align: right;">
-                <a class="btn btn-outline-secondary" href="@($"contracts/details?id={model.Id}")">Details</a>
-                <a class="btn btn-primary" href="@($"contracts/edit?id={model.Id}")">Edit</a>
+                <a class="btn btn-outline-secondary" href="@($"contracts/details?id={model.Id}")" title="Details">
+                    <i class="fa-regular fa-eye"></i>
+                </a>
+                <a class="btn btn-outline-primary" href="@($"contracts/edit?id={model.Id}")" title="Edit">
+                    <i class="fa-regular fa-pencil"></i>
+                </a>
                 <AuthorizeView Roles="Admin">
                     <Authorized>
-                        <a class="btn btn-danger" href="@($"contracts/delete?id={model.Id}")">Delete</a>
+                        <a class="btn btn-outline-danger" href="@($"contracts/delete?id={model.Id}")" title="Delete">
+                            <i class="fa-regular fa-trash"></i>
+                        </a>
                     </Authorized>
                 </AuthorizeView>
             </div>

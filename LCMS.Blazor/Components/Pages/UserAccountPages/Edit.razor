@@ -11,7 +11,24 @@
 
 <PageTitle>Edit</PageTitle>
 
-<h1>Edit User Account</h1>
+<div class="row">
+    <div class="col-6">
+        <h1>
+            <i class="fa-regular fa-user-secret"></i>
+            Edit User Account
+        </h1>
+    </div>
+    <div class="col-6 text-end">
+        <a class="btn btn-outline-secondary" href="/useraccounts">
+            <i class="fa-regular fa-x"></i>
+            Cancel
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-regular fa-save"></i>
+            Save
+        </button>
+    </div>
+</div>
 <hr />
 @if (Model is null)
 {
@@ -41,7 +58,6 @@ else
                     <InputCheckbox id="isDeleted" @bind-Value="Model.IsDeleted" class="form-check-input" />
                     <ValidationMessage For="() => Model.IsDeleted" class="text-danger" />
                 </div>
-                <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
         </div>
     </div>

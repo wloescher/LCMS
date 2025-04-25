@@ -12,15 +12,27 @@
 
 <div class="row">
     <div class="col-sm-6">
-        <h1>Clients <span class="badge rounded-pill bg-secondary">@models.Count</span></h1>
+        <h1>
+            <i class="fa-regular fa-user-tie"></i>
+            Clients
+            <span class="badge rounded-pill bg-secondary">@models.Count</span>
+        </h1>
     </div>
-    <div class="col-sm-6 text-end">
-        <input type="search" @bind="nameFilter" @bind:event="oninput" placeholder="Filter by Name..." />
-        <a class="btn btn-sm btn-primary" href="/clients/create">Create New</a>
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-10 text-end px-0">
+                <input type="search" class="form-control" @bind="nameFilter" @bind:event="oninput" placeholder="Filter by Name..." />
+            </div>
+            <div class="col-2 text-end">
+                <a class="btn btn-primary" href="clients/create">
+                    <i class="fa-regular fa-plus"></i>
+                    Create New
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 <hr />
-
 <div>
     <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
         <PropertyColumn Property="model => model.Name" />
@@ -34,11 +46,17 @@
         <PropertyColumn Property="model => model.IsActive" />
         <TemplateColumn Context="model">
             <div style="text-align: right;">
-                <a class="btn btn-outline-secondary" href="@($"cases/details?id={model.Id}")">Details</a>
-                <a class="btn btn-primary" href="@($"cases/edit?id={model.Id}")">Edit</a>
+                <a class="btn btn-outline-secondary" href="@($"clients/details?id={model.Id}")" title="Details">
+                    <i class="fa-regular fa-eye"></i>
+                </a>
+                <a class="btn btn-outline-primary" href="@($"clients/edit?id={model.Id}")" title="Edit">
+                    <i class="fa-regular fa-pencil"></i>
+                </a>
                 <AuthorizeView Roles="Admin">
                     <Authorized>
-                        <a class="btn btn-danger" href="@($"cases/delete?id={model.Id}")">Delete</a>
+                        <a class="btn btn-outline-danger" href="@($"clients/delete?id={model.Id}")" title="Delete">
+                            <i class="fa-regular fa-trash"></i>
+                        </a>
                     </Authorized>
                 </AuthorizeView>
             </div>

@@ -11,101 +11,114 @@
 
 <PageTitle>Create</PageTitle>
 
-<h1>Create User</h1>
+<div class="row">
+	<div class="col-6">
+		<h1>
+			<i class="fa-regular fa-user"></i>
+			Create User
+		</h1>
+	</div>
+	<div class="col-6 text-end">
+		<a class="btn btn-outline-secondary" href="/users">
+			<i class="fa-regular fa-x"></i>
+			Cancel
+		</a>
+		<button type="submit" class="btn btn-primary">
+			<i class="fa-regular fa-save"></i>
+			Save
+		</button>
+	</div>
+</div>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <EditForm method="post" Model="Model" OnValidSubmit="CreateUser" FormName="create" Enhance>
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <label for="typeId" class="form-label">Type</label>
-                <InputSelect id="typeId" @bind-Value="Model.TypeId" class="form-select">
-                    <option value="">
-                        Select...
-                    </option>
-                    @foreach (Enums.UserType value in Enum.GetValues(typeof(Enums.UserType)))
-                    {
-                        <option checked="@(Model.TypeId == (int)value)" value="@value">
-                            @value.ToString()
-                        </option>
-                    }
-                </InputSelect>
-                <ValidationMessage For="() => Model.TypeId" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="firstName" class="form-label">First Name</label>
-                <InputText id="firstName" @bind-Value="Model.FirstName" class="form-control" />
-                <ValidationMessage For="() => Model.FirstName" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="middleName" class="form-label">Middle Name</label>
-                <InputText id="middleName" @bind-Value="Model.MiddleName" class="form-control" />
-                <ValidationMessage For="() => Model.MiddleName" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="lastName" class="form-label">Last Name</label>
-                <InputText id="lastName" @bind-Value="Model.LastName" class="form-control" />
-                <ValidationMessage For="() => Model.LastName" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="emailAddress" class="form-label">Email Address</label>
-                <InputText id="emailAddress" @bind-Value="Model.EmailAddress" class="form-control" aria-required="true" />
-                <ValidationMessage For="() => Model.EmailAddress" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="addressLine1" class="form-label">Address Line1</label>
-                <InputText id="addressLine1" @bind-Value="Model.AddressLine1" class="form-control" />
-                <ValidationMessage For="() => Model.AddressLine1" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="addressLine2" class="form-label">Address Line2</label>
-                <InputText id="addressLine2" @bind-Value="Model.AddressLine2" class="form-control" />
-                <ValidationMessage For="() => Model.AddressLine2" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="city" class="form-label">City</label>
-                <InputText id="city" @bind-Value="Model.City" class="form-control" />
-                <ValidationMessage For="() => Model.City" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="region" class="form-label">Region</label>
-                <InputText id="region" @bind-Value="Model.Region" class="form-control" />
-                <ValidationMessage For="() => Model.Region" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="postalCode" class="form-label">Postal Code</label>
-                <InputText id="postalCode" @bind-Value="Model.PostalCode" class="form-control" />
-                <ValidationMessage For="() => Model.PostalCode" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="country" class="form-label">Country</label>
-                <InputText id="country" @bind-Value="Model.Country" class="form-control" />
-                <ValidationMessage For="() => Model.Country" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="phoneNumber" class="form-label">Phone Number</label>
-                <InputText id="phoneNumber" @bind-Value="Model.PhoneNumber" class="form-control" />
-                <ValidationMessage For="() => Model.PhoneNumber" class="text-danger" />
-            </div>
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
-    </div>
-</div>
-
-<div>
-    <a href="/users">Back to List</a>
+	<div class="col-md-4">
+		<EditForm method="post" Model="Model" OnValidSubmit="CreateUser" FormName="create" Enhance>
+			<DataAnnotationsValidator />
+			<ValidationSummary class="text-danger" role="alert" />
+			<div class="mb-3">
+				<label for="typeId" class="form-label">Type</label>
+				<InputSelect id="typeId" @bind-Value="Model.TypeId" class="form-select">
+					<option value="">
+						Select...
+					</option>
+					@foreach (Enums.UserType value in Enum.GetValues(typeof(Enums.UserType)))
+					{
+						<option checked="@(Model.TypeId == (int)value)" value="@value">
+							@value.ToString()
+						</option>
+					}
+				</InputSelect>
+				<ValidationMessage For="() => Model.TypeId" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="firstName" class="form-label">First Name</label>
+				<InputText id="firstName" @bind-Value="Model.FirstName" class="form-control" />
+				<ValidationMessage For="() => Model.FirstName" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="middleName" class="form-label">Middle Name</label>
+				<InputText id="middleName" @bind-Value="Model.MiddleName" class="form-control" />
+				<ValidationMessage For="() => Model.MiddleName" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="lastName" class="form-label">Last Name</label>
+				<InputText id="lastName" @bind-Value="Model.LastName" class="form-control" />
+				<ValidationMessage For="() => Model.LastName" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="emailAddress" class="form-label">Email Address</label>
+				<InputText id="emailAddress" @bind-Value="Model.EmailAddress" class="form-control" aria-required="true" />
+				<ValidationMessage For="() => Model.EmailAddress" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="addressLine1" class="form-label">Address Line1</label>
+				<InputText id="addressLine1" @bind-Value="Model.AddressLine1" class="form-control" />
+				<ValidationMessage For="() => Model.AddressLine1" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="addressLine2" class="form-label">Address Line2</label>
+				<InputText id="addressLine2" @bind-Value="Model.AddressLine2" class="form-control" />
+				<ValidationMessage For="() => Model.AddressLine2" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="city" class="form-label">City</label>
+				<InputText id="city" @bind-Value="Model.City" class="form-control" />
+				<ValidationMessage For="() => Model.City" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="region" class="form-label">Region</label>
+				<InputText id="region" @bind-Value="Model.Region" class="form-control" />
+				<ValidationMessage For="() => Model.Region" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="postalCode" class="form-label">Postal Code</label>
+				<InputText id="postalCode" @bind-Value="Model.PostalCode" class="form-control" />
+				<ValidationMessage For="() => Model.PostalCode" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="country" class="form-label">Country</label>
+				<InputText id="country" @bind-Value="Model.Country" class="form-control" />
+				<ValidationMessage For="() => Model.Country" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="phoneNumber" class="form-label">Phone Number</label>
+				<InputText id="phoneNumber" @bind-Value="Model.PhoneNumber" class="form-control" />
+				<ValidationMessage For="() => Model.PhoneNumber" class="text-danger" />
+			</div>
+			<button type="submit" class="btn btn-primary">Create</button>
+		</EditForm>
+	</div>
 </div>
 
 @code {
-    [SupplyParameterFromForm]
-    private UserModel Model { get; set; } = new();
+	[SupplyParameterFromForm]
+	private UserModel Model { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private void CreateUser()
-    {
-        var service = ServiceProvider.GetRequiredService<IUserService>();
-        service.CreateUser(Model, _currentUserId, out var errorMessage);
-        NavigationManager.NavigateTo("/users");
-    }
+	// To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+	private void CreateUser()
+	{
+		var service = ServiceProvider.GetRequiredService<IUserService>();
+		service.CreateUser(Model, _currentUserId, out var errorMessage);
+		NavigationManager.NavigateTo("/users");
+	}
 }

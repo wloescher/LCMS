@@ -10,36 +10,49 @@
 
 <PageTitle>Create</PageTitle>
 
-<h1>Create User Account</h1>
+<div class="row">
+	<div class="col-6">
+		<h1>
+			<i class="fa-regular fa-user-secret"></i>
+			Create User Account
+		</h1>
+	</div>
+	<div class="col-6 text-end">
+		<a class="btn btn-outline-secondary" href="/useraccounts">
+			<i class="fa-regular fa-x"></i>
+			Cancel
+		</a>
+		<button type="submit" class="btn btn-primary">
+			<i class="fa-regular fa-save"></i>
+			Save
+		</button>
+	</div>
+</div>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <EditForm method="post" Model="Model" OnValidSubmit="CreateUserAccount" FormName="create" Enhance>
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="mb-3">
-                <label for="username" class="form-label">UserName</label>
-                <InputText id="username" @bind-Value="Model.UserName" class="form-control" aria-required="true" />
-                <ValidationMessage For="() => Model.UserName" class="text-danger" />
-            </div>
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
-    </div>
-</div>
-
-<div>
-    <a href="/useraccounts">Back to List</a>
+	<div class="col-md-4">
+		<EditForm method="post" Model="Model" OnValidSubmit="CreateUserAccount" FormName="create" Enhance>
+			<DataAnnotationsValidator />
+			<ValidationSummary class="text-danger" role="alert" />
+			<div class="mb-3">
+				<label for="username" class="form-label">UserName</label>
+				<InputText id="username" @bind-Value="Model.UserName" class="form-control" aria-required="true" />
+				<ValidationMessage For="() => Model.UserName" class="text-danger" />
+			</div>
+			<button type="submit" class="btn btn-primary">Create</button>
+		</EditForm>
+	</div>
 </div>
 
 @code {
-    [SupplyParameterFromForm]
-    private UserAccountModel Model { get; set; } = new();
+	[SupplyParameterFromForm]
+	private UserAccountModel Model { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private void CreateUserAccount()
-    {
-        var service = ServiceProvider.GetRequiredService<IUserAccountService>();
-        service.CreateUserAccount(Model.UserName, _currentUserId);
-        NavigationManager.NavigateTo("/useraccounts");
-    }
+	// To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+	private void CreateUserAccount()
+	{
+		var service = ServiceProvider.GetRequiredService<IUserAccountService>();
+		service.CreateUserAccount(Model.UserName, _currentUserId);
+		NavigationManager.NavigateTo("/useraccounts");
+	}
 }

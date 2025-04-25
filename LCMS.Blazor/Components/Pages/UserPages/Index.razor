@@ -11,51 +11,70 @@
 <PageTitle>Index</PageTitle>
 
 <div class="row">
-    <div class="col-sm-6">
-        <h1>Users <span class="badge rounded-pill bg-secondary">@models.Count</span></h1>
-    </div>
-    <div class="col-sm-6 text-end">
-        <input type="search" @bind="nameFilter" @bind:event="oninput" placeholder="Filter by Name..." />
-        <a class="btn btn-sm btn-primary" href="users/create">Create New</a>
-    </div>
+	<div class="col-sm-6">
+		<h1>
+			<i class="fa-regular fa-user"></i>
+			User Accounts
+			<span class="badge rounded-pill bg-secondary">@models.Count</span>
+		</h1>
+	</div>
+	<div class="col-sm-6">
+		<div class="row">
+			<div class="col-10 text-end px-0">
+				<input type="search" class="form-control" @bind="nameFilter" @bind:event="oninput" placeholder="Filter by Title..." />
+			</div>
+			<div class="col-2 text-end">
+				<a class="btn btn-primary" href="users/create">
+					<i class="fa-regular fa-plus"></i>
+					Create New
+				</a>
+			</div>
+		</div>
+	</div>
 </div>
 <hr />
 <div>
-    <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
-        <PropertyColumn Property="user => user.FullName" Sortable="true" />
-        <PropertyColumn Property="user => user.Type" Sortable="true" />
-        <PropertyColumn Property="user => user.EmailAddress" Sortable="true" />
-        <PropertyColumn Property="user => user.City" Sortable="true" />
-        <PropertyColumn Property="user => user.Region" Sortable="true" />
-        <PropertyColumn Property="user => user.Country" Sortable="true" />
-        <PropertyColumn Property="user => user.PhoneNumber" Sortable="true" />
-        <PropertyColumn Property="user => user.IsActive" Sortable="true" />
-        <TemplateColumn Context="model">
-            <div style="text-align: right;">
-                <a class="btn btn-outline-secondary" href="@($"users/details?id={model.Id}")">Details</a>
-                <a class="btn btn-primary" href="@($"users/edit?id={model.Id}")">Edit</a>
-                <AuthorizeView Roles="Admin">
-                    <Authorized>
-                        <a class="btn btn-danger" href="@($"users/delete?id={model.Id}")">Delete</a>
-                    </Authorized>
-                </AuthorizeView>
-            </div>
-        </TemplateColumn>
-    </QuickGrid>
+	<QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
+		<PropertyColumn Property="user => user.FullName" Sortable="true" />
+		<PropertyColumn Property="user => user.Type" Sortable="true" />
+		<PropertyColumn Property="user => user.EmailAddress" Sortable="true" />
+		<PropertyColumn Property="user => user.City" Sortable="true" />
+		<PropertyColumn Property="user => user.Region" Sortable="true" />
+		<PropertyColumn Property="user => user.Country" Sortable="true" />
+		<PropertyColumn Property="user => user.PhoneNumber" Sortable="true" />
+		<PropertyColumn Property="user => user.IsActive" Sortable="true" />
+		<TemplateColumn Context="model">
+			<div style="text-align: right;">
+				<a class="btn btn-outline-secondary" href="@($"users/details?id={model.Id}")" title="Details">
+					<i class="fa-regular fa-eye"></i>
+				</a>
+				<a class="btn btn-outline-primary" href="@($"users/edit?id={model.Id}")" title="Edit">
+					<i class="fa-regular fa-pencil"></i>
+				</a>
+				<AuthorizeView Roles="Admin">
+					<Authorized>
+						<a class="btn btn-outline-danger" href="@($"users/delete?id={model.Id}")" title="Delete">
+							<i class="fa-regular fa-trash"></i>
+						</a>
+					</Authorized>
+				</AuthorizeView>
+			</div>
+		</TemplateColumn>
+	</QuickGrid>
 </div>
 <Paginator State="pagination" />
 
 @code {
-    private List<UserModel> models = new();
-    private string nameFilter = string.Empty;
-    private IQueryable<UserModel> FilteredModels => models.Where(x => x.FullName.ToLower().Contains(nameFilter)).AsQueryable();
-    private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+	private List<UserModel> models = new();
+	private string nameFilter = string.Empty;
+	private IQueryable<UserModel> FilteredModels => models.Where(x => x.FullName.ToLower().Contains(nameFilter)).AsQueryable();
+	private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
-    protected override async Task OnInitializedAsync()
-    {
-        var service = ServiceProvider.GetRequiredService<IUserService>();
-        models = service.GetUsers();
+	protected override async Task OnInitializedAsync()
+	{
+		var service = ServiceProvider.GetRequiredService<IUserService>();
+		models = service.GetUsers();
 
-        await base.OnInitializedAsync();
-    }
+		await base.OnInitializedAsync();
+	}
 }

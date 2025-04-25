@@ -11,17 +11,29 @@
 <PageTitle>Details</PageTitle>
 
 <div class="row">
-    <div class="col-sm-6">
-        <h1>Case Details</h1>
+    <div class="col-6">
+        <h1>
+            <i class="fa-regular fa-folder"></i>
+            Case Details
+        </h1>
     </div>
-    <div class="col-sm-6 text-end">
-        <a class="btn btn-outline-secondary" href="/cases">Cancel</a>
+    <div class="col-6 text-end">
+        <a class="btn btn-outline-secondary" href="/cases">
+            <i class="fa-regular fa-x"></i>
+            Cancel
+        </a>
         <AuthorizeView Roles="Admin">
             <Authorized>
-                <a href="@($"/cases/delete?id={model.Id}")" class="btn btn-danger">Delete</a>
+				<a class="btn btn-danger" href="@($"/cases/delete?id={model.Id}")">
+                    <i class="fa-regular fa-trash"></i>
+                    Delete
+                </a>
             </Authorized>
         </AuthorizeView>
-        <a href="@($"/cases/edit?id={model.Id}")" class="btn btn-primary">Edit</a>
+        <a class="btn btn-primary" href="@($"/cases/edit?id={model.Id}")">
+            <i class="fa-regular fa-pencil"></i>
+            Edit
+        </a>
     </div>
 </div>
 <hr />

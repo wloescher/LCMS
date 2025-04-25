@@ -12,7 +12,14 @@
 
 <PageTitle>Home</PageTitle>
 
-<h3>Cases <span class="badge rounded-pill bg-secondary">@cases.Count</span></h3>
+@*
+<a class="nav-link" href="/cases">
+	<h3>
+		<i class="fa-regular fa-folder"></i>
+		Cases 
+		<span class="badge rounded-pill bg-secondary">@cases.Count</span>
+	</h3>
+</a>
 <div>
     <QuickGrid Class="table" Items="FilteredCases" Pagination="casePagination">
         <PropertyColumn Property="model => model.Title" Sortable="true" />
@@ -33,81 +40,148 @@
     </QuickGrid>
 </div>
 <Paginator State="casePagination" />
+*@
 
-<h3 class="mt-4">Clients <span class="badge rounded-pill bg-secondary">@clients.Count</span></h3>
+<a class="nav-link" href="/contracts">
+	<h3>
+		<i class="fa-regular fa-file-contract"></i>
+		Contracts
+		<span class="badge rounded-pill bg-secondary">@contracts.Count</span>
+	</h3>
+</a>
 <div>
-    <QuickGrid Class="table" Items="FilteredClients" Pagination="clientPagination">
-        <PropertyColumn Property="model => model.Name" />
-        <PropertyColumn Property="model => model.Type" />
-        <PropertyColumn Property="model => model.City" />
-        <PropertyColumn Property="model => model.Region" />
-        <PropertyColumn Property="model => model.PhoneNumber" />
-        <TemplateColumn Context="model">
-            <div style="text-align: right;">
-                <a class="btn btn-outline-secondary" href="@($"clients/details?id={model.Id}")">Details</a>
-                <a class="btn btn-primary" href="@($"clients/edit?id={model.Id}")">Edit</a>
-                <AuthorizeView Roles="Admin">
-                    <Authorized>
-                        <a class="btn btn-danger" href="@($"clients/delete?id={model.Id}")">Delete</a>
-                    </Authorized>
-                </AuthorizeView>
-            </div>
-        </TemplateColumn>
-    </QuickGrid>
+	<QuickGrid Class="table" Items="FilteredContracts" Pagination="contractPagination">
+		<PropertyColumn Property="model => model.Title" Sortable="true" />
+		<PropertyColumn Property="model => model.ClientName" Sortable="true" />
+		<PropertyColumn Property="model => model.ContractType" Sortable="true" />
+		<PropertyColumn Property="model => model.Status" Sortable="true" />
+		<TemplateColumn Context="model">
+			<div style="text-align: right;">
+				<a class="btn btn-outline-secondary" href="@($"contracts/details?id={model.Id}")" title="Details">
+					<i class="fa-regular fa-eye"></i>
+				</a>
+				<a class="btn btn-outline-primary" href="@($"contracts/edit?id={model.Id}")" title="Edit">
+					<i class="fa-regular fa-pencil"></i>
+				</a>
+				<AuthorizeView Roles="Admin">
+					<Authorized>
+						<a class="btn btn-outline-danger" href="@($"contract/delete?id={model.Id}")" title="Delete">
+							<i class="fa-regular fa-trash"></i>
+						</a>
+					</Authorized>
+				</AuthorizeView>
+			</div>
+		</TemplateColumn>
+	</QuickGrid>
+</div>
+<Paginator State="contractPagination" />
+
+<a class="nav-link" href="/clients">
+	<h3 class="mt-4">
+		<i class="fa-regular fa-user-tie"></i>
+		Clients
+		<span class="badge rounded-pill bg-secondary">@clients.Count</span>
+	</h3>
+</a>
+<div>
+	<QuickGrid Class="table" Items="FilteredClients" Pagination="clientPagination">
+		<PropertyColumn Property="model => model.Name" />
+		<PropertyColumn Property="model => model.Type" />
+		<PropertyColumn Property="model => model.City" />
+		<PropertyColumn Property="model => model.Region" />
+		<PropertyColumn Property="model => model.PhoneNumber" />
+		<TemplateColumn Context="model">
+			<div style="text-align: right;">
+				<a class="btn btn-outline-secondary" href="@($"clients/details?id={model.Id}")" title="Details">
+					<i class="fa-regular fa-eye"></i>
+				</a>
+				<a class="btn btn-outline-primary" href="@($"clients/edit?id={model.Id}")" title="Edit">
+					<i class="fa-regular fa-pencil"></i>
+				</a>
+				<AuthorizeView Roles="Admin">
+					<Authorized>
+						<a class="btn btn-outline-danger" href="@($"clients/delete?id={model.Id}")" title="Delete">
+							<i class="fa-regular fa-trash"></i>
+						</a>
+					</Authorized>
+				</AuthorizeView>
+			</div>
+		</TemplateColumn>
+	</QuickGrid>
 </div>
 <Paginator State="clientPagination" />
 
-<h3 class="mt-4">Users <span class="badge rounded-pill bg-secondary">@users.Count</span></h3>
+<a class="nav-link" href="/users">
+<h3 class="mt-4">
+	<i class="fa-regular fa-users"></i>
+	Users
+	<span class="badge rounded-pill bg-secondary">@users.Count</span>
+</h3>
+</a>
 <div>
-    <QuickGrid Class="table" Items="FilteredUsers" Pagination="userPagination">
-        <PropertyColumn Property="user => user.FullName" Sortable="true" />
-        <PropertyColumn Property="user => user.Type" Sortable="true" />
-        <PropertyColumn Property="user => user.EmailAddress" Sortable="true" />
-        <PropertyColumn Property="user => user.City" Sortable="true" />
-        <PropertyColumn Property="user => user.Region" Sortable="true" />
-        <PropertyColumn Property="user => user.PhoneNumber" Sortable="true" />
-        <TemplateColumn Context="model">
-            <div style="text-align: right;">
-                <a class="btn btn-outline-secondary" href="@($"users/details?id={model.Id}")">Details</a>
-                <AuthorizeView Roles="Admin">
-                    <Authorized>
-                        <a class="btn btn-primary" href="@($"users/edit?id={model.Id}")">Edit</a>
-                        <a class="btn btn-danger" href="@($"users/delete?id={model.Id}")">Delete</a>
-                    </Authorized>
-                </AuthorizeView>
-            </div>
-        </TemplateColumn>
-    </QuickGrid>
+	<QuickGrid Class="table" Items="FilteredUsers" Pagination="userPagination">
+		<PropertyColumn Property="user => user.FullName" Sortable="true" />
+		<PropertyColumn Property="user => user.Type" Sortable="true" />
+		<PropertyColumn Property="user => user.EmailAddress" Sortable="true" />
+		<PropertyColumn Property="user => user.City" Sortable="true" />
+		<PropertyColumn Property="user => user.Region" Sortable="true" />
+		<PropertyColumn Property="user => user.PhoneNumber" Sortable="true" />
+		<TemplateColumn Context="model">
+			<div style="text-align: right;">
+				<a class="btn btn-outline-secondary" href="@($"users/details?id={model.Id}")" title="Details">
+					<i class="fa-regular fa-eye"></i>
+				</a>
+				<AuthorizeView Roles="Admin">
+					<Authorized>
+						<a class="btn btn-outline-primary" href="@($"users/edit?id={model.Id}")" title="Edit">
+							<i class="fa-regular fa-pencil"></i>
+						</a>
+						<a class="btn btn-outline-danger" href="@($"users/delete?id={model.Id}")" title="Delete">
+							<i class="fa-regular fa-trash"></i>
+						</a>
+					</Authorized>
+				</AuthorizeView>
+			</div>
+		</TemplateColumn>
+	</QuickGrid>
 </div>
 <Paginator State="userPagination" />
 
 @code {
-    private List<CaseModel> cases = new();
-    private string caseTitleFilter = string.Empty;
-    private IQueryable<CaseModel> FilteredCases => cases.Where(x => x.Title.ToLower().Contains(caseTitleFilter)).AsQueryable();
-    private PaginationState casePagination = new PaginationState { ItemsPerPage = 10 };
+	// private List<CaseModel> cases = new();
+	// private string caseTitleFilter = string.Empty;
+	// private IQueryable<CaseModel> FilteredCases => cases.Where(x => x.Title.ToLower().Contains(caseTitleFilter)).AsQueryable();
+	// private PaginationState casePagination = new PaginationState { ItemsPerPage = 10 };
 
-    private List<ClientModel> clients = new();
-    private string clientNameFilter = string.Empty;
-    private IQueryable<ClientModel> FilteredClients => clients.Where(x => x.Name.ToLower().Contains(clientNameFilter)).AsQueryable();
-    private PaginationState clientPagination = new PaginationState { ItemsPerPage = 10 };
+	private List<ContractModel> contracts = new();
+	private string contractTitleFilter = string.Empty;
+	private IQueryable<ContractModel> FilteredContracts => contracts.Where(x => x.Title.ToLower().Contains(contractTitleFilter)).AsQueryable();
+	private PaginationState contractPagination = new PaginationState { ItemsPerPage = 10 };
 
-    private List<UserModel> users = new();
-    private string userNameFilter = string.Empty;
-    private IQueryable<UserModel> FilteredUsers => users.Where(x => x.FullName.ToLower().Contains(userNameFilter)).AsQueryable();
-    private PaginationState userPagination = new PaginationState { ItemsPerPage = 10 };
+	private List<ClientModel> clients = new();
+	private string clientNameFilter = string.Empty;
+	private IQueryable<ClientModel> FilteredClients => clients.Where(x => x.Name.ToLower().Contains(clientNameFilter)).AsQueryable();
+	private PaginationState clientPagination = new PaginationState { ItemsPerPage = 10 };
 
-    protected override async Task OnInitializedAsync()
-    {
-        var caseService = ServiceProvider.GetRequiredService<ICaseService>();
-        cases = caseService.GetCases();
+	private List<UserModel> users = new();
+	private string userNameFilter = string.Empty;
+	private IQueryable<UserModel> FilteredUsers => users.Where(x => x.FullName.ToLower().Contains(userNameFilter)).AsQueryable();
+	private PaginationState userPagination = new PaginationState { ItemsPerPage = 10 };
 
-        var clientService = ServiceProvider.GetRequiredService<IClientService>();
-        clients = clientService.GetClients();
+	protected override async Task OnInitializedAsync()
+	{
+		// var caseService = ServiceProvider.GetRequiredService<ICaseService>();
+		// cases = caseService.GetCases();
 
-        var userService = ServiceProvider.GetRequiredService<IUserService>();
-        users = userService.GetUsers();
+		var contractService = ServiceProvider.GetRequiredService<IContractService>();
+		contracts = contractService.GetContracts();
 
-        await base.OnInitializedAsync();
-    }
+		var clientService = ServiceProvider.GetRequiredService<IClientService>();
+		clients = clientService.GetClients();
+
+		var userService = ServiceProvider.GetRequiredService<IUserService>();
+		users = userService.GetUsers();
+
+		await base.OnInitializedAsync();
+	}
 }

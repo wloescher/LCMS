@@ -10,7 +10,32 @@
 
 <PageTitle>Details</PageTitle>
 
-<h1>User Account Details</h1>
+<div class="row">
+    <div class="col-6">
+        <h1>
+            <i class="fa-regular fa-user"></i>
+            User Account Details
+        </h1>
+    </div>
+    <div class="col-6 text-end">
+        <a class="btn btn-outline-secondary" href="/useraccountss">
+            <i class="fa-regular fa-x"></i>
+            Cancel
+        </a>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <a class="btn btn-danger" href="@($"/ueraccounts/delete?id={model.Id}")">
+                    <i class="fa-regular fa-trash"></i>
+                    Delete
+                </a>
+            </Authorized>
+        </AuthorizeView>
+        <a class="btn btn-primary" href="@($"/useraccounts/edit?id={model.Id}")">
+            <i class="fa-regular fa-pencil"></i>
+            Edit
+        </a>
+    </div>
+</div>
 <hr />
 <div>
     @if (model is null)

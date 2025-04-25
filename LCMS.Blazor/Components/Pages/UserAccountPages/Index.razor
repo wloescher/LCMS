@@ -14,11 +14,24 @@
 
 <div class="row">
     <div class="col-sm-6">
-        <h1>User Accounts <span class="badge rounded-pill bg-secondary">@models.Count</span></h1>
+        <h1>
+            <i class="fa-regular fa-file-contract"></i>
+            User Accounts
+            <span class="badge rounded-pill bg-secondary">@models.Count</span>
+        </h1>
     </div>
-    <div class="col-sm-6 text-end">
-        <input type="search" @bind="userNameFilter" @bind:event="oninput" placeholder="Filter by UserName..." />
-        <a class="btn btn-sm btn-primary" href="useraccounts/create">Create New</a>
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-10 text-end px-0">
+                <input type="search" class="form-control" @bind="userNameFilter" @bind:event="oninput" placeholder="Filter by UserName..." />
+            </div>
+            <div class="col-2 text-end">
+                <a class="btn btn-primary" href="useraccounts/create">
+                    <i class="fa-regular fa-add"></i>
+                    Create New
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 <hr />
@@ -29,9 +42,15 @@
         <PropertyColumn Property="model => model.IsDeleted" Sortable="true" />
         <TemplateColumn Context="model">
             <div style="text-align: right;">
-                <a class="btn btn-outline-secondary" href="@($"useraccounts/details?id={model.Id}")">Details</a>
-                <a class="btn btn-primary" href="@($"useraccounts/edit?id={model.Id}")">Edit</a>
-                <a class="btn btn-danger" href="@($"useraccounts/delete?id={model.Id}")">Delete</a>
+                <a class="btn btn-outline-secondary" href="@($"useraccounts/details?id={model.Id}")" title="Details">
+                    <i class="fa-regular fa-eye"></i>
+                </a>
+                <a class="btn btn-outline-primary" href="@($"useraccounts/edit?id={model.Id}")" title="Edit">
+                    <i class="fa-regular fa-pencil"></i>
+                </a>
+                <a class="btn btn-outline-danger" href="@($"useraccounts/delete?id={model.Id}")" title="Delete">
+                    <i class="fa-regular fa-trash"></i>
+                </a>
             </div>
         </TemplateColumn>
     </QuickGrid>

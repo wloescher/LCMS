@@ -7,37 +7,44 @@
 				<Authorized>
 					<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
 						<div class="container-fluid">
-							<a class="navbar-brand" href="/">LCMS.Blazor</a>
+							<img src="/images/brownstein-icon.png" style="height: 20px;" class="me-1" />
+							<a class="navbar-brand" href="/">Contract Management</a>
 							<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 								<span class="navbar-toggler-icon"></span>
 							</button>
 							<div class="collapse navbar-collapse" id="navbarSupportedContent">
 								<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+									@*
+									<li class="nav-item">										
+										<a class="nav-link" href="/cases">
+											<i class="fa-regular fa-folder-open" size="lg"></i> Cases
+										</a>
+									</li>
+									*@
 									<li class="nav-item">
-										<a class="nav-link" href="/cases">Cases</a>
+										<a class="nav-link" href="/contracts">
+											<i class="fa-regular fa-file-contract" size="lg"></i> Contracts
+										</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link" href="/clients">Clients</a>
+										<a class="nav-link" href="/clients">
+											<i class="fa-regular fa-user-tie" size="lg"></i> Clients
+										</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link" href="/contracts">Contracts</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/users">Users</a>
+										<a class="nav-link" href="/users">
+											<i class="fa-regular fa-users" size="lg"></i> Users
+										</a>
 									</li>
 									<AuthorizeView Context="UserAccounts" Roles="Admin">
 										<Authorized>
 											<li class="nav-item">
-												<a class="nav-link" href="/useraccounts">User Accounts</a>
+												<a class="nav-link" href="/useraccounts">
+													<i class="fa-regular fa-user-secret" size="lg"></i> User Accounts
+												</a>
 											</li>
 										</Authorized>
 									</AuthorizeView>
-									<li class="nav-item">
-										<a class="nav-link" href="/pdfviewer">PDF Viewer</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/grid">Grid</a>
-									</li>
 								</ul>
 								<form class="d-flex">
 									<div class="input-group">

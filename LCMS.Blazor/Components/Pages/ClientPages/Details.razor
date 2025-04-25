@@ -8,11 +8,34 @@
 
 <PageTitle>Details</PageTitle>
 
-<h1>Details</h1>
-
+<div class="row">
+    <div class="col-6">
+        <h1>
+            <i class="fa-regular fa-user-tie"></i>
+            Client Details
+        </h1>
+    </div>
+    <div class="col-6 text-end">
+        <a class="btn btn-outline-secondary" href="/clients">
+            <i class="fa-regular fa-x"></i>
+            Cancel
+        </a>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <a class="btn btn-danger" href="@($"/clients/delete?id={model.Id}")">
+                    <i class="fa-regular fa-trash"></i>
+                    Delete
+                </a>
+            </Authorized>
+        </AuthorizeView>
+        <a class="btn btn-primary" href="@($"/clients/edit?id={model.Id}")">
+            <i class="fa-regular fa-pencil"></i>
+            Edit
+        </a>
+    </div>
+</div>
+<hr />
 <div>
-    <h2>Client</h2>
-    <hr />
     @if (model is null)
     {
         <p><em>Loading...</em></p>
