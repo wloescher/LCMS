@@ -34,19 +34,19 @@
 <div class="row">
 	<div class="col-md-6">
 		<TelerikDropZone Id="dropzone" NoteText="Allowed file types: Word, Excel, PDF" />
-		<TelerikFileSelect DropZoneId="dropzone" AllowedExtensions="@AllowedExtensions" Multiple="false" OnSelect="@OnFileSelectAsync" />
-		@*<TelerikUpload DropZoneId="dropzone" SaveUrl="@UploadSaveUrl" RemoveUrl="@UploadRemoveUrl" MaxFileSize="@( 16 * 1024 * 1024 )" OnSelect="OnUploadSelected" OnUpload="@OnUploadUpload" OnSuccess="@OnUploadSuccess" />*@
+		@*<TelerikFileSelect DropZoneId="dropzone" AllowedExtensions="@AllowedExtensions" Multiple="false" OnSelect="@OnFileSelectAsync" />*@
+		<TelerikUpload DropZoneId="dropzone" SaveUrl="@UploadSaveUrl" RemoveUrl="@UploadRemoveUrl" MaxFileSize="@( 16 * 1024 * 1024 )" OnSelect="OnUploadSelected" OnUpload="@OnUploadUpload" OnSuccess="@OnUploadSuccess" />
 		<div class="my-3">
 			<TelerikRadioGroup Data="@DocumentTypes" @bind-Value="@Model.DocumentTypeId" OnChange="@OnDocumentTypeChanged" Layout="RadioGroupLayout.Horizontal" />
 		</div>
 		@if (Model.DocumentTypeId == (int)DocumentType.Word || Model.DocumentTypeId == (int)DocumentType.Text)
 		{
-			<TelerikEditor Height="600px" Tools="@EditorTools" ReadOnly Value="@DocumentData.ToString()">
+			<TelerikEditor Height="600px" Tools="@EditorTools" ReadOnly Value="@EditorContent">
 				<EditorCustomTools>
 					<EditorCustomTool Name="SearchText">
-						<div class="input-group">
-							<input type="text" @bind="EditorSearchText" class="form-control" placeholder="Search document for text..." aria-label="Search Text" aria-describedby="btnSearchText">
-							<button class="btn btn-outline-success" type="button" id="btnSearchText" onclick="@EditorSearch">Button</button>
+						<div class="input-group pb-1">
+							<input type="text" @bind="SearchValue" class="form-control" placeholder="Search document for text..." aria-label="Search Text" aria-describedby="btnSearchText">
+							<button class="btn btn-outline-success" type="button" id="btnSearchText" onclick="@EditorSearch">Search</button>
 						</div>
 					</EditorCustomTool>
 				</EditorCustomTools>
@@ -161,13 +161,13 @@
 	private string UploadRemoveUrl => ToAbsoluteUrl("api/upload/remove");
 	private string ToAbsoluteUrl(string url) { return $"{NavigationManager.BaseUri}{url}"; }
 
-	private byte[] DocumentData { get; set; } = [];
+	private string EditorContent { get; set; } = string.Empty;
+	private byte[]? DocumentData { get; set; }
 	private string ImageSrc { get; set; } = string.Empty;
 
 	private List<IEditorTool> EditorTools { get; set; } = new List<IEditorTool>();
-	private string EditorSearchText { get; set; } = string.Empty;
-
 	private SpreadsheetToolSet SpreadsheetTools { get; set; } = new SpreadsheetToolSet();
+	private string SearchValue { get; set; } = string.Empty;
 
 	private List<KeyValuePair<int, string>> Clients = new();
 
@@ -200,50 +200,59 @@
 		await base.OnInitializedAsync();
 	}
 
-	private async Task OnFileSelectAsync(FileSelectEventArgs args)
-	{
-		var selectedFile = args.Files[0];
-		Model.FileName = selectedFile.Name;
+	// private async Task OnFileSelectAsync(FileSelectEventArgs args)
+	// {
+	// 	var selectedFile = args.Files[0];
+	// 	Model.FileName = selectedFile.Name;
 
-		// Set document type from file extension
-		switch (selectedFile.Extension)
-		{
-			case ".docx":
-			case ".doc":
-				Model.DocumentTypeId = (int)DocumentType.Word;
-				break;
-			case ".xlsx":
-			case ".xls":
-				Model.DocumentTypeId = (int)DocumentType.Excel;
-				break;
-			case ".pdf":
-				Model.DocumentTypeId = (int)DocumentType.PDF;
-				break;
-			case ".txt":
-				Model.DocumentTypeId = (int)DocumentType.Text;
-				break;
-			case ".jpeg":
-			case ".jpg":
-			case ".png":
-				Model.DocumentTypeId = (int)DocumentType.Image;
-				break;
-			default:
-				throw new ArgumentOutOfRangeException(string.Format("File Extension '{0}' not supported.", selectedFile.Extension));
-		}
+	// 	// Set document type from file extension
+	// 	switch (selectedFile.Extension)
+	// 	{
+	// 		case ".docx":
+	// 		case ".doc":
+	// 			Model.DocumentTypeId = (int)DocumentType.Word;
+	// 			break;
+	// 		case ".xlsx":
+	// 		case ".xls":
+	// 			Model.DocumentTypeId = (int)DocumentType.Excel;
+	// 			break;
+	// 		case ".pdf":
+	// 			Model.DocumentTypeId = (int)DocumentType.PDF;
+	// 			break;
+	// 		case ".txt":
+	// 			Model.DocumentTypeId = (int)DocumentType.Text;
+	// 			break;
+	// 		case ".jpeg":
+	// 		case ".jpg":
+	// 		case ".png":
+	// 			Model.DocumentTypeId = (int)DocumentType.Image;
+	// 			break;
+	// 		default:
+	// 			throw new ArgumentOutOfRangeException(string.Format("File Extension '{0}' not supported.", selectedFile.Extension));
+	// 	}
 
-		// Check for image
-		if (Model.DocumentType == DocumentType.Image)
-		{
-			ImageSrc = string.Format("/uploads/{0}", selectedFile.Name);
-		}
+	// 	// Check for image
+	// 	if (Model.DocumentType == DocumentType.Image)
+	// 	{
+	// 		ImageSrc = string.Format("/uploads/{0}", selectedFile.Name);
+	// 	}
 
-		// Read file data
-		var selectedFileInfo = new FileInfo(selectedFile.Name);
-		DocumentData = new byte[selectedFile.Stream.Length];
-		await selectedFile.Stream.ReadAsync(DocumentData);
+	// 	// // Read file data
+	// 	// var selectedFileInfo = new FileInfo(selectedFile.Name);
+	// 	// DocumentData = new byte[selectedFile.Stream.Length];
+	// 	// await selectedFile.Stream.ReadAsync(DocumentData);
 
-		Console.WriteLine("here we are");
-	}
+	// 	// e.File is of type FileSelectFileInfo (has Stream, Name, etc.)
+	// 	using var stream = selectedFile.Stream;
+	// 	using var ms = new MemoryStream();
+	// 	await stream.CopyToAsync(ms);
+
+	// 	DocumentData = ms.ToArray();
+	// 	// string base64 = Convert.ToBase64String(bytes);
+	// 	// ... do something with the base64 or bytes
+
+	// 	Console.WriteLine("here we are");
+	// }
 
 	private void OnUploadSelected(UploadSelectEventArgs args)
 	{
@@ -262,12 +271,22 @@
 
 	private void OnUploadSuccess(UploadSuccessEventArgs args)
 	{
-		var fileExtension = args.Files[0].Extension;
+		var uploadedFile = args.Files[0];
+		var filePath = string.Format (@"C:\Users\wloescher\source\repos\LCMS\LCMS.Blazor\wwwroot\uploads\{0}", uploadedFile.Name);
+		DocumentData = System.IO.File.ReadAllBytes(filePath);
+
+		var bitString = BitConverter.ToString(DocumentData);
+		var utfString = System.Text.Encoding.UTF8.GetString(DocumentData, 0, DocumentData.Length);
+		EditorContent = utfString;
+
+		ImageSrc = string.Format("/uploads/{0}", uploadedFile.Name);
+
+		var fileExtension = uploadedFile.Extension;
 		switch (fileExtension)
 		{
 			case ".docx":
 			case ".doc":
-				Model.DocumentTypeId = (int)DocumentType.Word;
+				Model.DocumentTypeId = (int)DocumentType.Word;				
 				break;
 			case ".xlsx":
 			case ".xls":
@@ -277,7 +296,13 @@
 				Model.DocumentTypeId = (int)DocumentType.PDF;
 				break;
 			case ".txt":
+			case ".html":
+			case ".htm":
 				Model.DocumentTypeId = (int)DocumentType.Text;
+				break;
+			case ".jpg":
+			case ".png":
+				Model.DocumentTypeId = (int)DocumentType.Image;
 				break;
 			default:
 				throw new ArgumentOutOfRangeException(string.Format("File Extension '{0}' not supported.", fileExtension));
@@ -286,14 +311,50 @@
 
 	private void EditorSearch()
 	{
-		Console.Write(string.Format("TODO: Search Word Document for '{0}'", EditorSearchText));
+		Console.Write(string.Format("TODO: Search Word Document for '{0}'", SearchValue));
+	}
+
+	private void SpreadsheetSearch()
+	{
+		Console.Write(string.Format("TODO: Search Excel Document for '{0}'", SearchValue));
 	}
 
 	private void OnDocumentTypeChanged(object newValue)
 	{
-		// TODO: Display preview control based on selected file type
+		// Reset data
+		EditorContent = string.Empty;
+		DocumentData = null;
+		ImageSrc = string.Empty;
+
+		// Display sample file based on selected file type
 		var documentType = (DocumentType)newValue;
-		Console.WriteLine(documentType);
+		var filePath = @"C:\Users\wloescher\source\repos\LCMS\LCMS.Blazor\wwwroot\uploads\";
+		var fileName = string.Empty;
+		switch (documentType)
+		{
+			case DocumentType.Text:
+				fileName += "sample-contract.txt";
+				break;
+			case DocumentType.Word:
+				fileName += "sample-contract.docx";
+				break;
+			case DocumentType.Excel:
+				fileName += "sample-contract.xlsx";
+				break;
+			case DocumentType.PDF:
+				fileName += "sample-contract.pdf";
+				break;
+			case DocumentType.Image:
+				fileName += "sample-contract.jpg";
+				break;
+			default:
+				throw new ArgumentOutOfRangeException(string.Format("DocumentType '{0}' not supported.", documentType));
+		}
+
+		DocumentData = System.IO.File.ReadAllBytes(filePath + fileName);
+		EditorContent = System.Text.Encoding.UTF8.GetString(DocumentData, 0, DocumentData.Length);
+		
+		ImageSrc = string.Format("/uploads/{0}", fileName);
 	}
 
 	// To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.

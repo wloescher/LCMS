@@ -14,8 +14,7 @@ namespace LCMS.Blazor.Controllers
             {
                 try
                 {
-                    var rootPath = HostingEnvironment.WebRootPath; // save to wwwroot - Blazor Server only
-                    //var rootPath = HostingEnvironment.ContentRootPath; // save to Server project root - Blazor Server or WebAssembly
+                    var rootPath = HostingEnvironment.WebRootPath; // save to wwwroot/uploads - Blazor Server only
                     var uploadPath = string.Format("{0}\\uploads", rootPath);
                     var saveLocation = Path.Combine(uploadPath, files.FileName);
 
@@ -44,8 +43,7 @@ namespace LCMS.Blazor.Controllers
             {
                 try
                 {
-                    var rootPath = HostingEnvironment.WebRootPath; // delete from wwwroot - Blazor Server only
-                    //var rootPath = HostingEnvironment.ContentRootPath; // delete from Server project root - Blazor Server or WebAssembly
+                    var rootPath = HostingEnvironment.WebRootPath; // delete from wwwroot/uploads - Blazor Server only
                     var uploadPath = string.Format("{0}\\uploads", rootPath);
                     var fileLocation = Path.Combine(uploadPath, files);
 
