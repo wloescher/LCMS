@@ -71,5 +71,26 @@ namespace LCMS.Services.Interfaces
         bool CreateUserAccount(UserAccount entity, int userId);
         bool UpdateUserAccount(UserAccount entityBefore, UserAccount entityAfter, int userId);
         bool DeleteUserAccount(UserAccount entityBefore, UserAccount entityAfter, int userId);
+
+        List<AuditModel> GetVendorAudits(int vendorId);
+        bool CreateVendor(Vendor entity, int userId);
+        bool UpdateVendor(Vendor entityBefore, Vendor entityAfter, int userId);
+        bool DeleteVendor(Vendor entityBefore, Vendor entityAfter, int userId);
+
+        List<AuditModel> GetVendorCommentAudits(int vendorCommentId);
+        bool CreateVendorComment(VendorComment entity, int CommentId);
+        bool DeleteVendorComment(VendorComment entity, int CommentId);
+
+        List<AuditModel> GetVendorDocumentAudits(int vendorDocumentId);
+        bool CreateVendorDocument(VendorDocument entity, int DocumentId);
+        bool DeleteVendorDocument(VendorDocument entity, int DocumentId);
+
+        List<AuditModel> GetVendorNoteAudits(int vendorNoteId);
+        bool CreateVendorNote(VendorNote entity, int NoteId);
+        bool DeleteVendorNote(VendorNote entity, int NoteId);
+
+        List<AuditModel> GetVendorUserAudits(int vendorUserId);
+        bool CreateVendorUser(VendorUser entity, int userId);
+        bool DeleteVendorUser(VendorUser entity, int userId);
     }
 }

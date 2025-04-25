@@ -120,4 +120,22 @@ public partial class User
     [ForeignKey("UserUserAccountId")]
     [InverseProperty("Users")]
     public virtual UserAccount UserUserAccount { get; set; }
+
+    [InverseProperty("VendorAuditUser")]
+    public virtual ICollection<VendorAudit> VendorAudits { get; set; } = new List<VendorAudit>();
+
+    [InverseProperty("VendorCommentAuditUser")]
+    public virtual ICollection<VendorCommentAudit> VendorCommentAudits { get; set; } = new List<VendorCommentAudit>();
+
+    [InverseProperty("VendorDocumentAuditUser")]
+    public virtual ICollection<VendorDocumentAudit> VendorDocumentAudits { get; set; } = new List<VendorDocumentAudit>();
+
+    [InverseProperty("VendorNoteAuditUser")]
+    public virtual ICollection<VendorNoteAudit> VendorNoteAudits { get; set; } = new List<VendorNoteAudit>();
+
+    [InverseProperty("VendorUserAuditUser")]
+    public virtual ICollection<VendorUserAudit> VendorUserAudits { get; set; } = new List<VendorUserAudit>();
+
+    [InverseProperty("VendorUserUser")]
+    public virtual ICollection<VendorUser> VendorUsers { get; set; } = new List<VendorUser>();
 }

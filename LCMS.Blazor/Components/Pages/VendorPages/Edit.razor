@@ -1,0 +1,171 @@
+﻿@page "/vendors/edit"
+@using Microsoft.EntityFrameworkCore
+@using LCMS.Models
+@using static LCMS.Models.Enums
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Edit</PageTitle>
+
+<div class="row">
+    <div class="col-6">
+        <h1>
+            <i class="fa-regular fa-box"></i>
+            Edit Vendor
+        </h1>
+    </div>
+    <div class="col-6 text-end">
+        <a class="btn btn-outline-secondary" href="/vendors">
+            <i class="fa-regular fa-x"></i>
+            Cancel
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-regular fa-save"></i>
+            Save
+        </button>
+    </div>
+</div>
+<hr />
+@if (Model is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Model" OnValidSubmit="UpdateVendor" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Model.Id" value="@Model.Id" />
+                <input type="hidden" name="Model.Guid" value="@Model.Guid" />
+                <div class="mb-3">
+                    <label for="typeId" class="form-label">Type</label>
+                    <InputSelect id="typeId" @bind-Value="Model.TypeId" class="form-select">
+                        <option value="">
+                            Select...
+                        </option>
+                        @foreach (Enums.VendorType value in Enum.GetValues(typeof(Enums.VendorType)))
+                        {
+                            <option checked="@(Model.TypeId == (int)value)" value="@value">
+                                @value.ToString()
+                            </option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => Model.TypeId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <InputText id="name" @bind-Value="Model.Name" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Model.Name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="addressLine1" class="form-label">Address Line1</label>
+                    <InputText id="addressLine1" @bind-Value="Model.AddressLine1" class="form-control" />
+                    <ValidationMessage For="() => Model.AddressLine1" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="addressLine2" class="form-label">Address Line2</label>
+                    <InputText id="addressLine2" @bind-Value="Model.AddressLine2" class="form-control" />
+                    <ValidationMessage For="() => Model.AddressLine2" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <InputText id="city" @bind-Value="Model.City" class="form-control" />
+                    <ValidationMessage For="() => Model.City" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="region" class="form-label">Region</label>
+                    <InputText id="region" @bind-Value="Model.Region" class="form-control" />
+                    <ValidationMessage For="() => Model.Region" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="postalCode" class="form-label">Postal Code</label>
+                    <InputText id="postalCode" @bind-Value="Model.PostalCode" class="form-control" />
+                    <ValidationMessage For="() => Model.PostalCode" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="country" class="form-label">Country</label>
+                    <InputText id="country" @bind-Value="Model.Country" class="form-control" />
+                    <ValidationMessage For="() => Model.Country" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                    <InputText id="phoneNumber" @bind-Value="Model.PhoneNumber" class="form-control" />
+                    <ValidationMessage For="() => Model.PhoneNumber" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="url" class="form-label">URL</label>
+                    <InputText id="url" @bind-Value="Model.Url" class="form-control" />
+                    <ValidationMessage For="() => Model.Url" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="isActive" class="form-label">IsActive</label>
+                    <InputCheckbox id="isActive" @bind-Value="Model.IsActive" class="form-check-input" />
+                    <ValidationMessage For="() => Model.IsActive" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="isDeleted" class="form-label">IsDeleted</label>
+                    <InputCheckbox id="isDeleted" @bind-Value="Model.IsDeleted" class="form-check-input" />
+                    <ValidationMessage For="() => Model.IsDeleted" class="text-danger" />
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private VendorModel? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<IVendorService>();
+        Model = service.GetVendor(Id);
+        if (Model is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private void UpdateVendor()
+    {
+        if (Model == null) return;
+
+        try
+        {
+            var service = ServiceProvider.GetRequiredService<IVendorService>();
+            service.UpdateVendor(Model, _currentUserId);
+            NavigationManager.NavigateTo("/clients");
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!VendorNameIsUnique(Model.Name))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/clients");
+    }
+
+    private bool VendorNameIsUnique(string clientName)
+    {
+        var service = ServiceProvider.GetRequiredService<IVendorService>();
+        return service.CheckForUniqueVendorName(Id, clientName);
+    }
+}

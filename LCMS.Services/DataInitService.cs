@@ -38,6 +38,11 @@ namespace LCMS.Services
             SeedContractDocumentData(dbContext);
             SeedContractNoteData(dbContext);
             SeedContractUserData(dbContext);
+            SeedVendorData(dbContext);
+            SeedVendorCommentData(dbContext);
+            SeedVendorDocumentData(dbContext);
+            SeedVendorNoteData(dbContext);
+            SeedVendorUserData(dbContext);
 
             // Seed audit data
             using var scope = serviceProvider.CreateScope();
@@ -57,6 +62,11 @@ namespace LCMS.Services
             SeedContractDocumentAuditData(dbContext, auditService);
             SeedContractNoteAuditData(dbContext, auditService);
             SeedContractUserAuditData(dbContext, auditService);
+            SeedVendorAuditData(dbContext, auditService);
+            SeedVendorCommentAuditData(dbContext, auditService);
+            SeedVendorDocumentAuditData(dbContext, auditService);
+            SeedVendorNoteAuditData(dbContext, auditService);
+            SeedVendorUserAuditData(dbContext, auditService);
         }
 
         #endregion
@@ -716,6 +726,219 @@ namespace LCMS.Services
 
         #endregion
 
+        #region Vendor
+
+        private static void SeedVendorData(LCMSDatabaseContext dbContext)
+        {
+            if (dbContext.Vendors == null)
+            {
+                throw new NullReferenceException("Vendors");
+            }
+
+            // Check for existing data
+            if (dbContext.Vendors.Any())
+            {
+                return;
+            }
+
+            var Vendors = new List<Vendor>();
+            foreach (Enums.VendorType VendorType in Enum.GetValues(typeof(Enums.VendorType)))
+            {
+                foreach (Enums.VendorStatus VendorStatus in Enum.GetValues(typeof(Enums.VendorStatus)))
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        Vendors.Add(new Vendor
+                        {
+                            VendorIsActive = true,
+                            VendorTypeId = (int)VendorType,
+                            VendorStatusId = (int)VendorStatus,
+                            VendorName = string.Format("Test Vendor - {0} - {1} - {2}", VendorType, VendorStatus, i.ToString("##")),
+                        });
+                    }
+                }
+            }
+
+            dbContext.Vendors.AddRange(Vendors);
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedVendorCommentData(LCMSDatabaseContext dbContext)
+        {
+            if (dbContext.VendorComments == null)
+            {
+                throw new NullReferenceException("VendorComments");
+            }
+
+            // Check for existing data
+            if (dbContext.VendorComments.Any())
+            {
+                return;
+            }
+
+            var comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+            var vendorComments = new List<VendorComment>();
+            foreach (Enums.VendorType vendorType in Enum.GetValues(typeof(Enums.VendorType)))
+            {
+                foreach (Enums.VendorStatus vendorStatus in Enum.GetValues(typeof(Enums.VendorStatus)))
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        for (int j = 1; j <= 5; j++)
+                        {
+                            vendorComments.Add(new VendorComment
+                            {
+                                VendorCommentVendorId = i,
+                                VendorCommentBody = comment
+                            });
+                        }
+                    }
+                }
+            }
+
+            dbContext.VendorComments.AddRange(vendorComments);
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedVendorDocumentData(LCMSDatabaseContext dbContext)
+        {
+            if (dbContext.VendorDocuments == null)
+            {
+                throw new NullReferenceException("VendorDocuments");
+            }
+
+            // Check for existing data
+            if (dbContext.VendorDocuments.Any())
+            {
+                return;
+            }
+
+            var title = "Lorem ipsum dolor sit amet";
+            var vendorDocuments = new List<VendorDocument>();
+            foreach (Enums.VendorType vendorType in Enum.GetValues(typeof(Enums.VendorType)))
+            {
+                foreach (Enums.VendorStatus vendorStatus in Enum.GetValues(typeof(Enums.VendorStatus)))
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        foreach (Enums.DocumentType documentType in Enum.GetValues(typeof(Enums.DocumentType)))
+                        {
+                            var extension = string.Empty;
+                            switch (documentType)
+                            {
+                                case DocumentType.Text:
+                                    extension = "txt";
+                                    break;
+                                case DocumentType.Word:
+                                    extension = "doc";
+                                    break;
+                                case DocumentType.PDF:
+                                    extension = "pdf";
+                                    break;
+                                case DocumentType.Excel:
+                                    extension = "xls";
+                                    break;
+                                case DocumentType.Image:
+                                    extension = "jpg";
+                                    break;
+                            }
+
+                            vendorDocuments.Add(new VendorDocument
+                            {
+                                VendorDocumentVendorId = i,
+                                VendorDocumentTypeId = (int)documentType,
+                                VendorDocumentTitle = string.Format("Test Document - {0} - {1}", documentType, i.ToString("##")),
+                                VendorDocumentSummary = title,
+                                VendorDocumentOriginalFileName = string.Format("Test-Document-{0}-{1}.{2}", documentType, i.ToString("##"), extension)
+                            });
+                        }
+                    }
+                }
+            }
+
+            dbContext.VendorDocuments.AddRange(vendorDocuments);
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedVendorNoteData(LCMSDatabaseContext dbContext)
+        {
+            if (dbContext.VendorNotes == null)
+            {
+                throw new NullReferenceException("VendorNotes");
+            }
+
+            // Check for existing data
+            if (dbContext.VendorNotes.Any())
+            {
+                return;
+            }
+
+            var note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+            var vendorNotes = new List<VendorNote>();
+            foreach (Enums.VendorType vendorType in Enum.GetValues(typeof(Enums.VendorType)))
+            {
+                foreach (Enums.VendorStatus vendorStatus in Enum.GetValues(typeof(Enums.VendorStatus)))
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        for (int j = 1; j <= 5; j++)
+                        {
+                            vendorNotes.Add(new VendorNote
+                            {
+                                VendorNoteVendorId = i,
+                                VendorNoteBody = note
+                            });
+                        }
+                    }
+                }
+            }
+
+            dbContext.VendorNotes.AddRange(vendorNotes);
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedVendorUserData(LCMSDatabaseContext dbContext)
+        {
+            if (dbContext.VendorUsers == null)
+            {
+                throw new NullReferenceException("VendorUsers");
+            }
+
+            // Check for existing data
+            if (dbContext.VendorUsers.Any())
+            {
+                return;
+            }
+
+            var vendorUsers = new List<VendorUser>();
+            foreach (Enums.VendorType vendorType in Enum.GetValues(typeof(Enums.VendorType)))
+            {
+                foreach (Enums.VendorStatus vendorStatus in Enum.GetValues(typeof(Enums.VendorStatus)))
+                {
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        for (int j = 1; j <= 5; j++)
+                        {
+                            // Check to make sure combo doesn't already exist (to prevent duplicate entries)
+                            if (!vendorUsers.Any(x => x.VendorUserVendorId == i && x.VendorUserUserId == j))
+                            {
+                                vendorUsers.Add(new VendorUser
+                                {
+                                    VendorUserVendorId = i,
+                                    VendorUserUserId = j
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            dbContext.VendorUsers.AddRange(vendorUsers);
+            dbContext.SaveChanges();
+        }
+
+        #endregion
+
         #endregion
 
         #region Seed Audit Data
@@ -1023,6 +1246,110 @@ namespace LCMS.Services
             foreach (var entity in entities)
             {
                 service.CreateContractUser(entity, 1);
+            }
+        }
+
+        #endregion
+
+        #region VendorAudit 
+
+        private static void SeedVendorAuditData(LCMSDatabaseContext dbContext, IAuditService service)
+        {
+            if (dbContext.VendorAudits == null)
+            {
+                throw new NullReferenceException("VendorAudits");
+            }
+
+            // Check for existing data
+            if (dbContext.VendorAudits.Any())
+            {
+                return;
+            }
+
+            var entities = dbContext.Vendors.ToList();
+            foreach (var entity in entities)
+            {
+                service.CreateVendor(entity, 1);
+            }
+        }
+
+        private static void SeedVendorCommentAuditData(LCMSDatabaseContext dbContext, IAuditService service)
+        {
+            if (dbContext.VendorCommentAudits == null)
+            {
+                throw new NullReferenceException("VendorCommentAudits");
+            }
+
+            // Check for existing data
+            if (dbContext.VendorCommentAudits.Any())
+            {
+                return;
+            }
+
+            var entities = dbContext.VendorComments.ToList();
+            foreach (var entity in entities)
+            {
+                service.CreateVendorComment(entity, 1);
+            }
+        }
+
+        private static void SeedVendorDocumentAuditData(LCMSDatabaseContext dbContext, IAuditService service)
+        {
+            if (dbContext.VendorDocumentAudits == null)
+            {
+                throw new NullReferenceException("VendorDocumentAudits");
+            }
+
+            // Check for existing data
+            if (dbContext.VendorDocumentAudits.Any())
+            {
+                return;
+            }
+
+            var entities = dbContext.VendorDocuments.ToList();
+            foreach (var entity in entities)
+            {
+                service.CreateVendorDocument(entity, 1);
+            }
+        }
+
+        private static void SeedVendorNoteAuditData(LCMSDatabaseContext dbContext, IAuditService service)
+        {
+            if (dbContext.VendorNoteAudits == null)
+            {
+                throw new NullReferenceException("VendorNoteAudits");
+            }
+
+            // Check for existing data
+            if (dbContext.VendorNoteAudits.Any())
+            {
+                return;
+            }
+
+            var entities = dbContext.VendorNotes.ToList();
+            foreach (var entity in entities)
+            {
+                service.CreateVendorNote(entity, 1);
+            }
+        }
+
+        private static void SeedVendorUserAuditData(LCMSDatabaseContext dbContext, IAuditService service)
+        {
+            if (dbContext.VendorUserAudits == null)
+            {
+                throw new NullReferenceException("VendorUserAudits");
+            }
+
+            // Check for existing data
+            if (dbContext.VendorUserAudits.Any())
+            {
+                return;
+            }
+
+            var entities = dbContext.VendorUsers.ToList();
+            foreach (var entity in entities)
+            {
+                service.CreateVendorUser(entity, 1);
             }
         }
 

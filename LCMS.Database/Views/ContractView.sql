@@ -18,9 +18,9 @@
 
 	FROM [Contract]
 		LEFT JOIN Client ON ContractClientId = ClientId
-		LEFT JOIN DataDictionary AS ContractType ON ContractType.DataDictionaryGroupId = 4 -- ContractType
+		LEFT JOIN DataDictionary AS ContractType ON ContractType.DataDictionaryGroupId = 7 -- ContractType
 			AND ContractTypeId = ContractType.DataDictionaryValue
-		LEFT JOIN DataDictionary AS ContractStatus ON ContractStatus.DataDictionaryGroupId = 5 -- ContractStatus
+		LEFT JOIN DataDictionary AS ContractStatus ON ContractStatus.DataDictionaryGroupId = 8 -- ContractStatus
 			AND ContractTypeId = ContractStatus.DataDictionaryValue
 		OUTER APPLY 
 			(

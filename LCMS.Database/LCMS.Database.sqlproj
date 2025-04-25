@@ -9,8 +9,7 @@
     <ProjectGuid>{a548234b-861d-4374-87ec-771a2ec6bf7a}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql140DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
+    <RootPath />
     <RootNamespace>LCMS.Database</RootNamespace>
     <AssemblyName>LCMS.Database</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
@@ -48,7 +47,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
@@ -107,6 +105,22 @@
     <Build Include="Views\ContractNoteView.sql" />
     <Build Include="Views\ContractUserView.sql" />
     <Build Include="Views\ContractView.sql" />
+    <Build Include="Tables\Vendor.sql" />
+    <Build Include="Tables\VendorAudit.sql" />
+    <Build Include="Tables\VendorComment.sql" />
+    <Build Include="Tables\VendorCommentAudit.sql" />
+    <Build Include="Tables\VendorUser.sql" />
+    <Build Include="Tables\VendorUserAudit.sql" />
+    <Build Include="Tables\VendorDocument.sql" />
+    <Build Include="Tables\VendorDocumentAudit.sql" />
+    <Build Include="Tables\VendorNote.sql" />
+    <Build Include="Tables\VendorNoteAudit.sql" />
+    <Build Include="Views\VendorAuditView.sql" />
+    <Build Include="Views\VendorCommentView.sql" />
+    <Build Include="Views\VendorDocumentView.sql" />
+    <Build Include="Views\VendorNoteView.sql" />
+    <Build Include="Views\VendorUserView.sql" />
+    <Build Include="Views\VendorView.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\UserAccountAudit.sql" />

@@ -1,0 +1,78 @@
+﻿@page "/vendors/details"
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Details</PageTitle>
+
+<div class="row">
+    <div class="col-6">
+        <h1>
+            <i class="fa-regular fa-box"></i>
+            Vendor Details
+        </h1>
+    </div>
+    <div class="col-6 text-end">
+        <a class="btn btn-outline-secondary" href="/vendors">
+            <i class="fa-regular fa-x"></i>
+            Cancel
+        </a>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <a class="btn btn-danger" href="@($"/vendors/delete?id={model.Id}")">
+                    <i class="fa-regular fa-trash"></i>
+                    Delete
+                </a>
+            </Authorized>
+        </AuthorizeView>
+        <a class="btn btn-primary" href="@($"/vendors/edit?id={model.Id}")">
+            <i class="fa-regular fa-pencil"></i>
+            Edit
+        </a>
+    </div>
+</div>
+<hr />
+<div>
+    @if (model is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Type</dt>
+            <dd class="col-sm-10">@model.Type</dd>
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@model.Name</dd>
+            <dt class="col-sm-2">Address</dt>
+            <dd class="col-sm-10">@model.FullAddress</dd>
+            <dt class="col-sm-2">Phone Number</dt>
+            <dd class="col-sm-10">@model.PhoneNumber</dd>
+            <dt class="col-sm-2">URL</dt>
+            <dd class="col-sm-10">@model.Url</dd>
+            <dt class="col-sm-2">IsActive</dt>
+            <dd class="col-sm-10">@model.IsActive</dd>
+        </dl>
+    }
+</div>
+
+@code {
+    private VendorModel? model;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<IVendorService>();
+        model = service.GetVendor(Id);
+        if (model is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+        await base.OnInitializedAsync();
+    }
+}

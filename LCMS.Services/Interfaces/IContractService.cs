@@ -28,6 +28,5 @@ namespace LCMS.Services.Interfaces
         bool CreateContractUser(int contractId, int userId, int userId_Source);
         List<UserModel> GetContractUsers(int contractId);
         bool DeleteContractUser(int contractId, int userId, int userId_Source);
-
     }
 }

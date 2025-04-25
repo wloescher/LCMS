@@ -111,6 +111,38 @@ public partial class LCMSDatabaseContext : DbContext
 
     public virtual DbSet<UserView> UserViews { get; set; }
 
+    public virtual DbSet<Vendor> Vendors { get; set; }
+
+    public virtual DbSet<VendorAudit> VendorAudits { get; set; }
+
+    public virtual DbSet<VendorAuditView> VendorAuditViews { get; set; }
+
+    public virtual DbSet<VendorComment> VendorComments { get; set; }
+
+    public virtual DbSet<VendorCommentAudit> VendorCommentAudits { get; set; }
+
+    public virtual DbSet<VendorCommentView> VendorCommentViews { get; set; }
+
+    public virtual DbSet<VendorDocument> VendorDocuments { get; set; }
+
+    public virtual DbSet<VendorDocumentAudit> VendorDocumentAudits { get; set; }
+
+    public virtual DbSet<VendorDocumentView> VendorDocumentViews { get; set; }
+
+    public virtual DbSet<VendorNote> VendorNotes { get; set; }
+
+    public virtual DbSet<VendorNoteAudit> VendorNoteAudits { get; set; }
+
+    public virtual DbSet<VendorNoteView> VendorNoteViews { get; set; }
+
+    public virtual DbSet<VendorUser> VendorUsers { get; set; }
+
+    public virtual DbSet<VendorUserAudit> VendorUserAudits { get; set; }
+
+    public virtual DbSet<VendorUserView> VendorUserViews { get; set; }
+
+    public virtual DbSet<VendorView> VendorViews { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Case>(entity =>
@@ -604,6 +636,172 @@ public partial class LCMSDatabaseContext : DbContext
         modelBuilder.Entity<UserView>(entity =>
         {
             entity.ToView("UserView");
+        });
+
+        modelBuilder.Entity<Vendor>(entity =>
+        {
+            entity.Property(e => e.VendorGuid).HasDefaultValueSql("NEWID()");
+
+            entity.HasOne(d => d.VendorStatus).WithMany(p => p.VendorVendorStatuses)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Vendor_DataDictionary_Status");
+
+            entity.HasOne(d => d.VendorType).WithMany(p => p.VendorVendorTypes)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Vendor_DataDictionary_Type");
+        });
+
+        modelBuilder.Entity<VendorAudit>(entity =>
+        {
+            entity.Property(e => e.VendorAuditDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.VendorAuditAction).WithMany(p => p.VendorAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorAudit_DataDictionary");
+
+            entity.HasOne(d => d.VendorAuditUser).WithMany(p => p.VendorAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorAudit_User");
+
+            entity.HasOne(d => d.VendorAuditVendor).WithMany(p => p.VendorAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorAudit_Vendor");
+        });
+
+        modelBuilder.Entity<VendorAuditView>(entity =>
+        {
+            entity.ToView("VendorAuditView");
+        });
+
+        modelBuilder.Entity<VendorComment>(entity =>
+        {
+            entity.Property(e => e.VendorCommentGuid).HasDefaultValueSql("NEWID()");
+
+            entity.HasOne(d => d.VendorCommentVendor).WithMany(p => p.VendorComments)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorComment_Vendor");
+        });
+
+        modelBuilder.Entity<VendorCommentAudit>(entity =>
+        {
+            entity.Property(e => e.VendorCommentAuditDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.VendorCommentAuditAction).WithMany(p => p.VendorCommentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorCommentAudit_DataDictionary");
+
+            entity.HasOne(d => d.VendorCommentAuditUser).WithMany(p => p.VendorCommentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorCommentAudit_User");
+
+            entity.HasOne(d => d.VendorCommentAuditVendorComment).WithMany(p => p.VendorCommentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorCommentAudit_VendorComment");
+        });
+
+        modelBuilder.Entity<VendorCommentView>(entity =>
+        {
+            entity.ToView("VendorCommentView");
+        });
+
+        modelBuilder.Entity<VendorDocument>(entity =>
+        {
+            entity.Property(e => e.VendorDocumentGuid).HasDefaultValueSql("NEWID()");
+
+            entity.HasOne(d => d.VendorDocumentVendor).WithMany(p => p.VendorDocuments)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorDocument_Vendor");
+        });
+
+        modelBuilder.Entity<VendorDocumentAudit>(entity =>
+        {
+            entity.Property(e => e.VendorDocumentAuditDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.VendorDocumentAuditAction).WithMany(p => p.VendorDocumentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorDocumentAudit_DataDictionary");
+
+            entity.HasOne(d => d.VendorDocumentAuditUser).WithMany(p => p.VendorDocumentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorDocumentAudit_User");
+
+            entity.HasOne(d => d.VendorDocumentAuditVendorDocument).WithMany(p => p.VendorDocumentAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorDocumentAudit_VendorDocument");
+        });
+
+        modelBuilder.Entity<VendorDocumentView>(entity =>
+        {
+            entity.ToView("VendorDocumentView");
+        });
+
+        modelBuilder.Entity<VendorNote>(entity =>
+        {
+            entity.Property(e => e.VendorNoteGuid).HasDefaultValueSql("NEWID()");
+
+            entity.HasOne(d => d.VendorNoteVendor).WithMany(p => p.VendorNotes)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorNote_Vendor");
+        });
+
+        modelBuilder.Entity<VendorNoteAudit>(entity =>
+        {
+            entity.Property(e => e.VendorNoteAuditDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.VendorNoteAuditAction).WithMany(p => p.VendorNoteAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorNoteAudit_DataDictionary");
+
+            entity.HasOne(d => d.VendorNoteAuditUser).WithMany(p => p.VendorNoteAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorNoteAudit_User");
+
+            entity.HasOne(d => d.VendorNoteAuditVendorNote).WithMany(p => p.VendorNoteAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorNoteAudit_VendorNote");
+        });
+
+        modelBuilder.Entity<VendorNoteView>(entity =>
+        {
+            entity.ToView("VendorNoteView");
+        });
+
+        modelBuilder.Entity<VendorUser>(entity =>
+        {
+            entity.HasOne(d => d.VendorUserUser).WithMany(p => p.VendorUsers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorUser_User");
+
+            entity.HasOne(d => d.VendorUserVendor).WithMany(p => p.VendorUsers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorUser_Vendor");
+        });
+
+        modelBuilder.Entity<VendorUserAudit>(entity =>
+        {
+            entity.Property(e => e.VendorUserAuditDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.VendorUserAuditAction).WithMany(p => p.VendorUserAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorUserAudit_DataDictionary");
+
+            entity.HasOne(d => d.VendorUserAuditUser).WithMany(p => p.VendorUserAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorUserAudit_User");
+
+            entity.HasOne(d => d.VendorUserAuditVendorUser).WithMany(p => p.VendorUserAudits)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VendorUserAudit_VendorUser");
+        });
+
+        modelBuilder.Entity<VendorUserView>(entity =>
+        {
+            entity.ToView("VendorUserView");
+        });
+
+        modelBuilder.Entity<VendorView>(entity =>
+        {
+            entity.ToView("VendorView");
         });
 
         OnModelCreatingPartial(modelBuilder);

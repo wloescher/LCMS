@@ -29,6 +29,12 @@ namespace LCMS.Models
 
             [Display(Name = "Contract Status")]
             ContractStatus = 8,
+
+            [Display(Name = "Vendor Type")]
+            VendorType = 9,
+
+            [Display(Name = "Vendor Status")]
+            VendorStatus = 10,
         }
 
         public enum AuditAction
@@ -101,6 +107,22 @@ namespace LCMS.Models
             PendingCancelation = 4,
             Expired = 5,
             Closed = 6,
+        }
+
+        public enum VendorType
+        {
+            Hardware = 1,
+            Software = 2,
+            Services = 3,
+        }
+
+        public enum VendorStatus
+        {
+            New = 1,
+            [Display(Name = "In Review")]
+            InReview = 2,
+            Approved = 3,
+            Cancelled = 4,
         }
     }
 }

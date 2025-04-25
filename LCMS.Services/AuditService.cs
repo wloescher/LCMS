@@ -1,4 +1,5 @@
-﻿using LCMS.Models;
+﻿using System.Reflection;
+using LCMS.Models;
 using LCMS.Repository.Entities;
 using LCMS.Services.BaseClasses;
 using LCMS.Services.Interfaces;
@@ -6,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Reflection;
 using static LCMS.Models.Enums;
 using DataDictionaryGroup = LCMS.Repository.Entities.DataDictionaryGroup;
 
@@ -15,6 +15,13 @@ namespace LCMS.Services
     public class AuditService(IDbContextFactory<LCMSDatabaseContext> dbContextFactory, IMemoryCache memoryCache, IServiceProvider serviceProvider, IConfiguration configuration)
         : DbContextService(dbContextFactory, memoryCache, serviceProvider, configuration), IAuditService
     {
+        //private readonly JsonSerializerOptions jsonSerializerOptions = new()
+        //{
+        //    MaxDepth = 0,
+        //    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        //    IgnoreReadOnlyProperties = true
+        //};
+
         #region Public Methods
 
         #region DataDictionaryGroup
@@ -244,7 +251,7 @@ namespace LCMS.Services
             return CreateUserAudit(entityAfter.UserId, userId, AuditAction.Delete, beforeJson, afterJson, affectedColumns);
         }
 
-        public List<AuditModel> GetCaseAudits(int contractId)
+        public List<AuditModel> GetCaseAudits(int caseId)
         {
             var models = new List<AuditModel>();
 
@@ -252,7 +259,7 @@ namespace LCMS.Services
             List<CaseAudit> entities;
             using (var dbContext = _dbContextFactory.CreateDbContext())
             {
-                entities = dbContext.CaseAudits.Where(a => a.CaseAuditCaseId == contractId).ToList();
+                entities = dbContext.CaseAudits.Where(a => a.CaseAuditCaseId == caseId).ToList();
             }
 
             // Convert to models
@@ -293,7 +300,7 @@ namespace LCMS.Services
             return CreateCaseAudit(entityAfter.CaseId, userId, AuditAction.Delete, beforeJson, afterJson, affectedColumns);
         }
 
-        public List<AuditModel> GetCaseCommentAudits(int contractCommentId)
+        public List<AuditModel> GetCaseCommentAudits(int caseCommentId)
         {
             var models = new List<AuditModel>();
 
@@ -301,7 +308,7 @@ namespace LCMS.Services
             List<CaseCommentAudit> entities;
             using (var dbContext = _dbContextFactory.CreateDbContext())
             {
-                entities = dbContext.CaseCommentAudits.Where(a => a.CaseCommentAuditCaseCommentId == contractCommentId).ToList();
+                entities = dbContext.CaseCommentAudits.Where(a => a.CaseCommentAuditCaseCommentId == caseCommentId).ToList();
             }
 
             // Convert to models
@@ -329,7 +336,7 @@ namespace LCMS.Services
             return CreateCaseCommentAudit(entity.CaseCommentId, userId, AuditAction.Delete, beforeJson, afterJson);
         }
 
-        public List<AuditModel> GetCaseDocumentAudits(int contractDocumentId)
+        public List<AuditModel> GetCaseDocumentAudits(int caseDocumentId)
         {
             var models = new List<AuditModel>();
 
@@ -337,7 +344,7 @@ namespace LCMS.Services
             List<CaseDocumentAudit> entities;
             using (var dbContext = _dbContextFactory.CreateDbContext())
             {
-                entities = dbContext.CaseDocumentAudits.Where(a => a.CaseDocumentAuditCaseDocumentId == contractDocumentId).ToList();
+                entities = dbContext.CaseDocumentAudits.Where(a => a.CaseDocumentAuditCaseDocumentId == caseDocumentId).ToList();
             }
 
             // Convert to models
@@ -365,7 +372,7 @@ namespace LCMS.Services
             return CreateCaseDocumentAudit(entity.CaseDocumentId, userId, AuditAction.Delete, beforeJson, afterJson);
         }
 
-        public List<AuditModel> GetCaseNoteAudits(int contractNoteId)
+        public List<AuditModel> GetCaseNoteAudits(int caseNoteId)
         {
             var models = new List<AuditModel>();
 
@@ -373,7 +380,7 @@ namespace LCMS.Services
             List<CaseNoteAudit> entities;
             using (var dbContext = _dbContextFactory.CreateDbContext())
             {
-                entities = dbContext.CaseNoteAudits.Where(a => a.CaseNoteAuditCaseNoteId == contractNoteId).ToList();
+                entities = dbContext.CaseNoteAudits.Where(a => a.CaseNoteAuditCaseNoteId == caseNoteId).ToList();
             }
 
             // Convert to models
@@ -401,7 +408,7 @@ namespace LCMS.Services
             return CreateCaseNoteAudit(entity.CaseNoteId, userId, AuditAction.Delete, beforeJson, afterJson);
         }
 
-        public List<AuditModel> GetCaseUserAudits(int contractUserId)
+        public List<AuditModel> GetCaseUserAudits(int caseUserId)
         {
             var models = new List<AuditModel>();
 
@@ -409,7 +416,7 @@ namespace LCMS.Services
             List<CaseUserAudit> entities;
             using (var dbContext = _dbContextFactory.CreateDbContext())
             {
-                entities = dbContext.CaseUserAudits.Where(a => a.CaseUserAuditCaseUserId == contractUserId).ToList();
+                entities = dbContext.CaseUserAudits.Where(a => a.CaseUserAuditCaseUserId == caseUserId).ToList();
             }
 
             // Convert to models
@@ -446,6 +453,26 @@ namespace LCMS.Services
             using (var dbContext = _dbContextFactory.CreateDbContext())
             {
                 entities = dbContext.CaseAudits.Where(a => a.CaseAuditCaseId == contractId).ToList();
+            }
+
+            // Convert to models
+            foreach (var entity in entities)
+            {
+                models.Add(GetModel(entity));
+            }
+
+            return models;
+        }
+
+        public List<AuditModel> GetVendorAudits(int vendorId)
+        {
+            var models = new List<AuditModel>();
+
+            // Get entities
+            List<CaseAudit> entities;
+            using (var dbContext = _dbContextFactory.CreateDbContext())
+            {
+                entities = dbContext.CaseAudits.Where(a => a.CaseAuditCaseId == vendorId).ToList();
             }
 
             // Convert to models
@@ -632,7 +659,180 @@ namespace LCMS.Services
 
         #endregion
 
-#endregion
+        #region Vendor
+
+        public bool CreateVendor(Vendor entity, int userId)
+        {
+            var entityBefore = new Vendor();
+            var beforeJson = JsonConvert.SerializeObject(entityBefore);
+            var afterJson = JsonConvert.SerializeObject(entity);
+            var affectedColumns = GetAffectedColumns(entityBefore, entity);
+            return CreateVendorAudit(entity.VendorId, userId, AuditAction.Create, beforeJson, afterJson, affectedColumns);
+        }
+
+        public bool UpdateVendor(Vendor entityBefore, Vendor entityAfter, int userId)
+        {
+            var beforeJson = JsonConvert.SerializeObject(entityBefore);
+            var afterJson = JsonConvert.SerializeObject(entityAfter);
+            var affectedColumns = GetAffectedColumns(entityBefore, entityAfter);
+            return CreateVendorAudit(entityAfter.VendorId, userId, AuditAction.Update, beforeJson, afterJson, affectedColumns);
+        }
+
+        public bool DeleteVendor(Vendor entityBefore, Vendor entityAfter, int userId)
+        {
+            var beforeJson = JsonConvert.SerializeObject(entityBefore);
+            var afterJson = JsonConvert.SerializeObject(entityAfter);
+            var affectedColumns = GetAffectedColumns(entityBefore, entityAfter);
+            return CreateVendorAudit(entityAfter.VendorId, userId, AuditAction.Delete, beforeJson, afterJson, affectedColumns);
+        }
+
+        public List<AuditModel> GetVendorCommentAudits(int VendorCommentId)
+        {
+            var models = new List<AuditModel>();
+
+            // Get entities
+            List<VendorCommentAudit> entities;
+            using (var dbContext = _dbContextFactory.CreateDbContext())
+            {
+                entities = dbContext.VendorCommentAudits.Where(a => a.VendorCommentAuditVendorCommentId == VendorCommentId).ToList();
+            }
+
+            // Convert to models
+            foreach (var entity in entities)
+            {
+                models.Add(GetModel(entity));
+            }
+
+            return models;
+        }
+
+        public bool CreateVendorComment(VendorComment entity, int userId)
+        {
+            var entityBefore = new VendorComment();
+            var beforeJson = JsonConvert.SerializeObject(entityBefore);
+            var afterJson = JsonConvert.SerializeObject(entity);
+            return CreateVendorCommentAudit(entity.VendorCommentId, userId, AuditAction.Create, beforeJson, afterJson);
+        }
+
+        public bool DeleteVendorComment(VendorComment entity, int userId)
+        {
+            var entityAfter = new VendorComment();
+            var beforeJson = JsonConvert.SerializeObject(entity);
+            var afterJson = JsonConvert.SerializeObject(entityAfter);
+            return CreateVendorCommentAudit(entity.VendorCommentId, userId, AuditAction.Delete, beforeJson, afterJson);
+        }
+
+        public List<AuditModel> GetVendorDocumentAudits(int VendorDocumentId)
+        {
+            var models = new List<AuditModel>();
+
+            // Get entities
+            List<VendorDocumentAudit> entities;
+            using (var dbContext = _dbContextFactory.CreateDbContext())
+            {
+                entities = dbContext.VendorDocumentAudits.Where(a => a.VendorDocumentAuditVendorDocumentId == VendorDocumentId).ToList();
+            }
+
+            // Convert to models
+            foreach (var entity in entities)
+            {
+                models.Add(GetModel(entity));
+            }
+
+            return models;
+        }
+
+        public bool CreateVendorDocument(VendorDocument entity, int userId)
+        {
+            var entityBefore = new VendorDocument();
+            var beforeJson = JsonConvert.SerializeObject(entityBefore);
+            var afterJson = JsonConvert.SerializeObject(entity);
+            return CreateVendorDocumentAudit(entity.VendorDocumentId, userId, AuditAction.Create, beforeJson, afterJson);
+        }
+
+        public bool DeleteVendorDocument(VendorDocument entity, int userId)
+        {
+            var entityAfter = new VendorDocument();
+            var beforeJson = JsonConvert.SerializeObject(entity);
+            var afterJson = JsonConvert.SerializeObject(entityAfter);
+            return CreateVendorDocumentAudit(entity.VendorDocumentId, userId, AuditAction.Delete, beforeJson, afterJson);
+        }
+
+        public List<AuditModel> GetVendorNoteAudits(int VendorNoteId)
+        {
+            var models = new List<AuditModel>();
+
+            // Get entities
+            List<VendorNoteAudit> entities;
+            using (var dbContext = _dbContextFactory.CreateDbContext())
+            {
+                entities = dbContext.VendorNoteAudits.Where(a => a.VendorNoteAuditVendorNoteId == VendorNoteId).ToList();
+            }
+
+            // Convert to models
+            foreach (var entity in entities)
+            {
+                models.Add(GetModel(entity));
+            }
+
+            return models;
+        }
+
+        public bool CreateVendorNote(VendorNote entity, int userId)
+        {
+            var entityBefore = new VendorNote();
+            var beforeJson = JsonConvert.SerializeObject(entityBefore);
+            var afterJson = JsonConvert.SerializeObject(entity);
+            return CreateVendorNoteAudit(entity.VendorNoteId, userId, AuditAction.Create, beforeJson, afterJson);
+        }
+
+        public bool DeleteVendorNote(VendorNote entity, int userId)
+        {
+            var entityAfter = new VendorNote();
+            var beforeJson = JsonConvert.SerializeObject(entity);
+            var afterJson = JsonConvert.SerializeObject(entityAfter);
+            return CreateVendorNoteAudit(entity.VendorNoteId, userId, AuditAction.Delete, beforeJson, afterJson);
+        }
+
+        public List<AuditModel> GetVendorUserAudits(int VendorUserId)
+        {
+            var models = new List<AuditModel>();
+
+            // Get entities
+            List<VendorUserAudit> entities;
+            using (var dbContext = _dbContextFactory.CreateDbContext())
+            {
+                entities = dbContext.VendorUserAudits.Where(a => a.VendorUserAuditVendorUserId == VendorUserId).ToList();
+            }
+
+            // Convert to models
+            foreach (var entity in entities)
+            {
+                models.Add(GetModel(entity));
+            }
+
+            return models;
+        }
+
+        public bool CreateVendorUser(VendorUser entity, int userId)
+        {
+            var entityBefore = new VendorUser();
+            var beforeJson = JsonConvert.SerializeObject(entityBefore);
+            var afterJson = JsonConvert.SerializeObject(entity);
+            return CreateVendorUserAudit(entity.VendorUserId, userId, AuditAction.Create, beforeJson, afterJson);
+        }
+
+        public bool DeleteVendorUser(VendorUser entity, int userId)
+        {
+            var entityAfter = new VendorUser();
+            var beforeJson = JsonConvert.SerializeObject(entity);
+            var afterJson = JsonConvert.SerializeObject(entityAfter);
+            return CreateVendorUserAudit(entity.VendorUserId, userId, AuditAction.Delete, beforeJson, afterJson);
+        }
+
+        #endregion
+
+        #endregion
 
         #region Private Methods
 
@@ -769,13 +969,13 @@ namespace LCMS.Services
             return dbContext.SaveChanges() > 0;
         }
 
-        private bool CreateCaseAudit(int contractId, int userId, AuditAction action, string beforeJson, string afterJson, List<string> affectedColumns)
+        private bool CreateCaseAudit(int caseId, int userId, AuditAction action, string beforeJson, string afterJson, List<string> affectedColumns)
         {
             // Create audit record
             using var dbContext = _dbContextFactory.CreateDbContext();
             dbContext.CaseAudits.Add(new CaseAudit
             {
-                CaseAuditCaseId = contractId,
+                CaseAuditCaseId = caseId,
                 CaseAuditUserId = userId,
                 CaseAuditDate = DateTime.Now,
                 CaseAuditActionId = (int)action,
@@ -787,13 +987,13 @@ namespace LCMS.Services
             return dbContext.SaveChanges() > 0;
         }
 
-        private bool CreateCaseCommentAudit(int contractCommentId, int userId, AuditAction action, string beforeJson, string afterJson)
+        private bool CreateCaseCommentAudit(int caseCommentId, int userId, AuditAction action, string beforeJson, string afterJson)
         {
             // Create audit record
             using var dbContext = _dbContextFactory.CreateDbContext();
             dbContext.CaseCommentAudits.Add(new CaseCommentAudit
             {
-                CaseCommentAuditCaseCommentId = contractCommentId,
+                CaseCommentAuditCaseCommentId = caseCommentId,
                 CaseCommentAuditUserId = userId,
                 CaseCommentAuditDate = DateTime.Now,
                 CaseCommentAuditActionId = (int)action,
@@ -805,13 +1005,13 @@ namespace LCMS.Services
             return dbContext.SaveChanges() > 0;
         }
 
-        private bool CreateCaseDocumentAudit(int contractDocumentId, int userId, AuditAction action, string beforeJson, string afterJson)
+        private bool CreateCaseDocumentAudit(int caseDocumentId, int userId, AuditAction action, string beforeJson, string afterJson)
         {
             // Create audit record
             using var dbContext = _dbContextFactory.CreateDbContext();
             dbContext.CaseDocumentAudits.Add(new CaseDocumentAudit
             {
-                CaseDocumentAuditCaseDocumentId = contractDocumentId,
+                CaseDocumentAuditCaseDocumentId = caseDocumentId,
                 CaseDocumentAuditUserId = userId,
                 CaseDocumentAuditDate = DateTime.Now,
                 CaseDocumentAuditActionId = (int)action,
@@ -823,13 +1023,13 @@ namespace LCMS.Services
             return dbContext.SaveChanges() > 0;
         }
 
-        private bool CreateCaseNoteAudit(int contractNoteId, int userId, AuditAction action, string beforeJson, string afterJson)
+        private bool CreateCaseNoteAudit(int caseNoteId, int userId, AuditAction action, string beforeJson, string afterJson)
         {
             // Create audit record
             using var dbContext = _dbContextFactory.CreateDbContext();
             dbContext.CaseNoteAudits.Add(new CaseNoteAudit
             {
-                CaseNoteAuditCaseNoteId = contractNoteId,
+                CaseNoteAuditCaseNoteId = caseNoteId,
                 CaseNoteAuditUserId = userId,
                 CaseNoteAuditDate = DateTime.Now,
                 CaseNoteAuditActionId = (int)action,
@@ -841,13 +1041,13 @@ namespace LCMS.Services
             return dbContext.SaveChanges() > 0;
         }
 
-        private bool CreateCaseUserAudit(int contractUserId, int userId, AuditAction action, string beforeJson, string afterJson)
+        private bool CreateCaseUserAudit(int caseUserId, int userId, AuditAction action, string beforeJson, string afterJson)
         {
             // Create audit record
             using var dbContext = _dbContextFactory.CreateDbContext();
             dbContext.CaseUserAudits.Add(new CaseUserAudit
             {
-                CaseUserAuditCaseUserId = contractUserId,
+                CaseUserAuditCaseUserId = caseUserId,
                 CaseUserAuditUserId = userId,
                 CaseUserAuditDate = DateTime.Now,
                 CaseUserAuditActionId = (int)action,
@@ -948,6 +1148,97 @@ namespace LCMS.Services
 
             return dbContext.SaveChanges() > 0;
         }
+
+        private bool CreateVendorAudit(int vendorId, int userId, AuditAction action, string beforeJson, string afterJson, List<string> affectedColumns)
+        {
+            // Create audit record
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            dbContext.VendorAudits.Add(new VendorAudit
+            {
+                VendorAuditVendorId = vendorId,
+                VendorAuditUserId = userId,
+                VendorAuditDate = DateTime.Now,
+                VendorAuditActionId = (int)action,
+                VendorAuditBeforeJson = beforeJson,
+                VendorAuditAfterJson = afterJson,
+                VendorAuditAffectedColumns = string.Join(",", affectedColumns),
+            });
+
+            return dbContext.SaveChanges() > 0;
+        }
+
+        private bool CreateVendorCommentAudit(int vendorCommentId, int userId, AuditAction action, string beforeJson, string afterJson)
+        {
+            // Create audit record
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            dbContext.VendorCommentAudits.Add(new VendorCommentAudit
+            {
+                VendorCommentAuditVendorCommentId = vendorCommentId,
+                VendorCommentAuditUserId = userId,
+                VendorCommentAuditDate = DateTime.Now,
+                VendorCommentAuditActionId = (int)action,
+                VendorCommentAuditBeforeJson = beforeJson,
+                VendorCommentAuditAfterJson = afterJson,
+                VendorCommentAuditAffectedColumns = string.Empty,
+            });
+
+            return dbContext.SaveChanges() > 0;
+        }
+
+        private bool CreateVendorDocumentAudit(int vendorDocumentId, int userId, AuditAction action, string beforeJson, string afterJson)
+        {
+            // Create audit record
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            dbContext.VendorDocumentAudits.Add(new VendorDocumentAudit
+            {
+                VendorDocumentAuditVendorDocumentId = vendorDocumentId,
+                VendorDocumentAuditUserId = userId,
+                VendorDocumentAuditDate = DateTime.Now,
+                VendorDocumentAuditActionId = (int)action,
+                VendorDocumentAuditBeforeJson = beforeJson,
+                VendorDocumentAuditAfterJson = afterJson,
+                VendorDocumentAuditAffectedColumns = string.Empty,
+            });
+
+            return dbContext.SaveChanges() > 0;
+        }
+
+        private bool CreateVendorNoteAudit(int vendorNoteId, int userId, AuditAction action, string beforeJson, string afterJson)
+        {
+            // Create audit record
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            dbContext.VendorNoteAudits.Add(new VendorNoteAudit
+            {
+                VendorNoteAuditVendorNoteId = vendorNoteId,
+                VendorNoteAuditUserId = userId,
+                VendorNoteAuditDate = DateTime.Now,
+                VendorNoteAuditActionId = (int)action,
+                VendorNoteAuditBeforeJson = beforeJson,
+                VendorNoteAuditAfterJson = afterJson,
+                VendorNoteAuditAffectedColumns = string.Empty,
+            });
+
+            return dbContext.SaveChanges() > 0;
+        }
+
+        private bool CreateVendorUserAudit(int vendorUserId, int userId, AuditAction action, string beforeJson, string afterJson)
+        {
+            // Create audit record
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            dbContext.VendorUserAudits.Add(new VendorUserAudit
+            {
+                VendorUserAuditVendorUserId = vendorUserId,
+                VendorUserAuditUserId = userId,
+                VendorUserAuditDate = DateTime.Now,
+                VendorUserAuditActionId = (int)action,
+                VendorUserAuditBeforeJson = beforeJson,
+                VendorUserAuditAfterJson = afterJson,
+                VendorUserAuditAffectedColumns = string.Empty,
+            });
+
+            return dbContext.SaveChanges() > 0;
+        }
+
 
         private static AuditModel GetModel(DataDictionaryGroupAudit entity)
         {
@@ -1141,6 +1432,72 @@ namespace LCMS.Services
                 BeforeJson = entity.ContractUserAuditBeforeJson,
                 AfterJson = entity.ContractUserAuditAfterJson,
                 AffectedColumns = entity.ContractUserAuditAffectedColumns.Split(',').ToList(),
+            };
+        }
+
+
+        private static AuditModel GetModel(VendorAudit entity)
+        {
+            return new AuditModel
+            {
+                Id = entity.VendorAuditId,
+                Date = entity.VendorAuditDate,
+                Action = (AuditAction)entity.VendorAuditActionId,
+                BeforeJson = entity.VendorAuditBeforeJson,
+                AfterJson = entity.VendorAuditAfterJson,
+                AffectedColumns = entity.VendorAuditAffectedColumns.Split(',').ToList(),
+            };
+        }
+
+        private static AuditModel GetModel(VendorCommentAudit entity)
+        {
+            return new AuditModel
+            {
+                Id = entity.VendorCommentAuditId,
+                Date = entity.VendorCommentAuditDate,
+                Action = (AuditAction)entity.VendorCommentAuditActionId,
+                BeforeJson = entity.VendorCommentAuditBeforeJson,
+                AfterJson = entity.VendorCommentAuditAfterJson,
+                AffectedColumns = entity.VendorCommentAuditAffectedColumns.Split(',').ToList(),
+            };
+        }
+
+        private static AuditModel GetModel(VendorDocumentAudit entity)
+        {
+            return new AuditModel
+            {
+                Id = entity.VendorDocumentAuditId,
+                Date = entity.VendorDocumentAuditDate,
+                Action = (AuditAction)entity.VendorDocumentAuditActionId,
+                BeforeJson = entity.VendorDocumentAuditBeforeJson,
+                AfterJson = entity.VendorDocumentAuditAfterJson,
+                AffectedColumns = entity.VendorDocumentAuditAffectedColumns.Split(',').ToList(),
+            };
+        }
+
+        private static AuditModel GetModel(VendorNoteAudit entity)
+        {
+            return new AuditModel
+            {
+                Id = entity.VendorNoteAuditId,
+                Date = entity.VendorNoteAuditDate,
+                Action = (AuditAction)entity.VendorNoteAuditActionId,
+                BeforeJson = entity.VendorNoteAuditBeforeJson,
+                AfterJson = entity.VendorNoteAuditAfterJson,
+                AffectedColumns = entity.VendorNoteAuditAffectedColumns.Split(',').ToList(),
+            };
+        }
+
+        private static AuditModel GetModel(VendorUserAudit entity)
+        {
+            return new AuditModel
+            {
+                Id = entity.VendorUserAuditId,
+                Date = entity.VendorUserAuditDate,
+                Action = (AuditAction)entity.VendorUserAuditActionId,
+                BeforeJson = entity.VendorUserAuditBeforeJson,
+                AfterJson = entity.VendorUserAuditAfterJson,
+                AffectedColumns = entity.VendorUserAuditAffectedColumns.Split(',').ToList(),
             };
         }
 

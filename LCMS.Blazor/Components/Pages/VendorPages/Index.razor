@@ -1,0 +1,81 @@
+﻿@page "/vendors"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using LCMS.Models
+@using LCMS.Services.Interfaces
+@using LCMS.Blazor.Components.Pages.BaseClasses
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+@inherits AuthenticatedPageBase
+
+<PageTitle>Index</PageTitle>
+
+<div class="row">
+    <div class="col-sm-6">
+        <h1>
+            <i class="fa-regular fa-box"></i>
+            Vendors
+            <span class="badge rounded-pill bg-secondary">@models.Count</span>
+        </h1>
+    </div>
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-10 text-end px-0">
+                <input type="search" class="form-control" @bind="nameFilter" @bind:event="oninput" placeholder="Filter by Name..." />
+            </div>
+            <div class="col-2 text-end">
+                <a class="btn btn-primary" href="vendors/create">
+                    <i class="fa-regular fa-plus"></i>
+                    Create New
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<div>
+    <QuickGrid Class="table" Items="FilteredModels" Pagination="pagination">
+        <PropertyColumn Property="model => model.Name" />
+        <PropertyColumn Property="model => model.Type" />
+        <PropertyColumn Property="model => model.City" />
+        <PropertyColumn Property="model => model.Region" />
+        <PropertyColumn Property="model => model.PostalCode" />
+        <PropertyColumn Property="model => model.Country" />
+        <PropertyColumn Property="model => model.PhoneNumber" />
+        <PropertyColumn Property="model => model.Url" />
+        <PropertyColumn Property="model => model.IsActive" />
+        <TemplateColumn Context="model">
+            <div style="text-align: right;">
+                <a class="btn btn-outline-secondary" href="@($"vendors/details?id={model.Id}")" title="Details">
+                    <i class="fa-regular fa-eye"></i>
+                </a>
+                <a class="btn btn-outline-primary" href="@($"vendors/edit?id={model.Id}")" title="Edit">
+                    <i class="fa-regular fa-pencil"></i>
+                </a>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <a class="btn btn-outline-danger" href="@($"vendors/delete?id={model.Id}")" title="Delete">
+                            <i class="fa-regular fa-trash"></i>
+                        </a>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+<Paginator State="pagination" />
+
+@code {
+    private List<VendorModel> models = new();
+    private string nameFilter = string.Empty;
+    private IQueryable<VendorModel> FilteredModels => models.Where(x => x.Name.ToLower().Contains(nameFilter)).AsQueryable();
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = ServiceProvider.GetRequiredService<IVendorService>();
+        models = service.GetVendors();
+
+        await base.OnInitializedAsync();
+    }
+}

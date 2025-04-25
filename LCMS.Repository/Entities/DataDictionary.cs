@@ -99,4 +99,25 @@ public partial class DataDictionary
 
     [InverseProperty("UserType")]
     public virtual ICollection<User> Users { get; set; } = new List<User>();
+
+    [InverseProperty("VendorAuditAction")]
+    public virtual ICollection<VendorAudit> VendorAudits { get; set; } = new List<VendorAudit>();
+
+    [InverseProperty("VendorCommentAuditAction")]
+    public virtual ICollection<VendorCommentAudit> VendorCommentAudits { get; set; } = new List<VendorCommentAudit>();
+
+    [InverseProperty("VendorDocumentAuditAction")]
+    public virtual ICollection<VendorDocumentAudit> VendorDocumentAudits { get; set; } = new List<VendorDocumentAudit>();
+
+    [InverseProperty("VendorNoteAuditAction")]
+    public virtual ICollection<VendorNoteAudit> VendorNoteAudits { get; set; } = new List<VendorNoteAudit>();
+
+    [InverseProperty("VendorUserAuditAction")]
+    public virtual ICollection<VendorUserAudit> VendorUserAudits { get; set; } = new List<VendorUserAudit>();
+
+    [InverseProperty("VendorStatus")]
+    public virtual ICollection<Vendor> VendorVendorStatuses { get; set; } = new List<Vendor>();
+
+    [InverseProperty("VendorType")]
+    public virtual ICollection<Vendor> VendorVendorTypes { get; set; } = new List<Vendor>();
 }

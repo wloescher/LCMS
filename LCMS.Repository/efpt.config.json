@@ -135,6 +135,46 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Vendor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VendorAudit]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VendorComment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VendorCommentAudit]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VendorDocument]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VendorDocumentAudit]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VendorNote]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VendorNoteAudit]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VendorUser]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VendorUserAudit]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[CaseAuditView]",
          "ObjectType": 3
       },
@@ -208,6 +248,30 @@
       },
       {
          "Name": "[dbo].[UserView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[VendorAuditView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[VendorCommentView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[VendorDocumentView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[VendorNoteView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[VendorUserView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[VendorView]",
          "ObjectType": 3
       }
    ],
