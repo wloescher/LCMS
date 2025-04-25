@@ -16,7 +16,11 @@
 <PageTitle>Create</PageTitle>
 
 <style>
-	.k-toolbar {
+	.k-editor-toolbar {
+		display: none;
+	}
+
+	.k-spreadsheet-action-bar {
 		display: none;
 	}
 </style>
@@ -33,10 +37,14 @@
 <hr />
 <div class="row">
 	<div class="col-md-6">
-		<TelerikDropZone Id="dropzone" NoteText="Allowed file types: Word, Excel, PDF" />
-		@*<TelerikFileSelect DropZoneId="dropzone" AllowedExtensions="@AllowedExtensions" Multiple="false" OnSelect="@OnFileSelectAsync" />*@
-		<TelerikUpload DropZoneId="dropzone" SaveUrl="@UploadSaveUrl" RemoveUrl="@UploadRemoveUrl" MaxFileSize="@( 16 * 1024 * 1024 )" OnSelect="OnUploadSelected" OnUpload="@OnUploadUpload" OnSuccess="@OnUploadSuccess" />
+		@if (Model.DocumentTypeId == 0)
+		{
+			<TelerikDropZone Id="dropzone" NoteText="Allowed file types: Word, Excel, PDF" />
+			@*<TelerikFileSelect DropZoneId="dropzone" AllowedExtensions="@AllowedExtensions" Multiple="false" OnSelect="@OnFileSelectAsync" />*@
+			<TelerikUpload Id="upload" DropZoneId="dropzone" SaveUrl="@UploadSaveUrl" RemoveUrl="@UploadRemoveUrl" MaxFileSize="@( 16 * 1024 * 1024 )" OnSelect="OnUploadSelected" OnUpload="@OnUploadUpload" OnSuccess="@OnUploadSuccess" />
+		}
 		<div class="my-3">
+			Select Document Type:
 			<TelerikRadioGroup Data="@DocumentTypes" @bind-Value="@Model.DocumentTypeId" OnChange="@OnDocumentTypeChanged" Layout="RadioGroupLayout.Horizontal" />
 		</div>
 		@if (Model.DocumentTypeId == (int)DocumentType.Word || Model.DocumentTypeId == (int)DocumentType.Text)
@@ -156,6 +164,7 @@
 	[SupplyParameterFromForm]
 	private ContractModel Model { get; set; } = new();
 
+	private ElementReference UploadFileContainer;
 	private List<string> AllowedExtensions { get; set; } = new List<string>() { ".docx", ".doc", ".xlsx", ".xls", ".pdf" };
 	private string UploadSaveUrl => ToAbsoluteUrl("api/upload/save");
 	private string UploadRemoveUrl => ToAbsoluteUrl("api/upload/remove");
@@ -181,6 +190,12 @@
 		}
 	}
 
+	private RenderFragment SpreadsheetSearchTemplate =>
+	@<div class="input-group pb-1">
+		<input type="text" @bind="SearchValue" class="form-control" placeholder="Search document for text..." aria-label="Search Text" aria-describedby="btnSearchText">
+		<button class="btn btn-outline-success" type="button" id="btnSearchText" onclick="@SpreadsheetSearch">Search</button>
+	</div>;
+
 	protected override async Task OnInitializedAsync()
 	{
 		var clientService = ServiceProvider.GetRequiredService<IClientService>();
@@ -192,7 +207,7 @@
 			{
 				Tools = new List<SpreadsheetTool>()
 				{
-					new SpreadsheetOpenFileTool(),
+					new SpreadsheetCustomTool(){ Template = SpreadsheetSearchTemplate },
 				}
 			}
 		};
@@ -271,8 +286,11 @@
 
 	private void OnUploadSuccess(UploadSuccessEventArgs args)
 	{
+		// Hide Dropzone and Upload controls
+
+
 		var uploadedFile = args.Files[0];
-		var filePath = string.Format (@"C:\Users\wloescher\source\repos\LCMS\LCMS.Blazor\wwwroot\uploads\{0}", uploadedFile.Name);
+		var filePath = string.Format(@"C:\Users\wloescher\source\repos\LCMS\LCMS.Blazor\wwwroot\uploads\{0}", uploadedFile.Name);
 		DocumentData = System.IO.File.ReadAllBytes(filePath);
 
 		var bitString = BitConverter.ToString(DocumentData);
@@ -286,7 +304,7 @@
 		{
 			case ".docx":
 			case ".doc":
-				Model.DocumentTypeId = (int)DocumentType.Word;				
+				Model.DocumentTypeId = (int)DocumentType.Word;
 				break;
 			case ".xlsx":
 			case ".xls":
@@ -353,7 +371,7 @@
 
 		DocumentData = System.IO.File.ReadAllBytes(filePath + fileName);
 		EditorContent = System.Text.Encoding.UTF8.GetString(DocumentData, 0, DocumentData.Length);
-		
+
 		ImageSrc = string.Format("/uploads/{0}", fileName);
 	}
 
